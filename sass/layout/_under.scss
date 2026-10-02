@@ -101,6 +101,9 @@
   // 読み幅の上限。em なので文字サイズに追従する。
   // 日本語は1文字≒1em なので 40em ≒ 40文字／行。長すぎると次の行を見失う
   max-inline-size: 40em;
+  // 語の途中で折らない（S-53：「お知らせで／す。」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // お知らせの記事ページだけの薄い見出し（2026-10-01、コンペ A）。

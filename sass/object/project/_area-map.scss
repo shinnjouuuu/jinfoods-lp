@@ -103,9 +103,11 @@
   font-family: var(--font-head);
   font-size: fluid(15px, 17px);
   font-weight: 700;
-  // 文節の切れ目（HTML の <wbr>）でだけ折る。2026-10-02 に文を3市の名前に替えたら、375px で「ありま／す」と1字だけ落ちたため。
-  // auto-phrase は Safari で効かないので keep-all＋<wbr>（p-arcgal__end-go と同じ）。入りきらないときは body の overflow-wrap: anywhere が割る
+  // 文節の切れ目でだけ折る。2026-10-02 に文を3市の名前に替えたら、375px で「ありま／す」と1字だけ落ちたため。
+  // Chrome は auto-phrase（文節）で、Safari は auto-phrase を知らないので keep-all＋HTML の <wbr> で折る（S-53 の決まりの順）。
+  // 入りきらないときは body の overflow-wrap: anywhere が割る
   word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // 下地の出典（国土数値情報の利用条件で表記が要る）。消さないこと
@@ -113,6 +115,9 @@
   font-size: 0.6875rem;  // 0.6875rem=11px
   line-height: 1.7;
   color: var(--color-text-note);
+  // 語の途中で折らない（S-53：「加工し／て作成」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // ---- JS が付ける状態 ----

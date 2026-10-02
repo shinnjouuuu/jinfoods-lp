@@ -93,6 +93,9 @@ $_frame-pad: fluid(14px, 18px);
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.7;
   color: var(--color-text-note);
+  // 語の途中で折らない（S-53：「ご記入いた／だける」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // 見本のフォーム（contact.html）で送信を押したときの知らせ。文は main.js が入れる。
@@ -202,6 +205,9 @@ $_frame-pad: fluid(14px, 18px);
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.8;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「お読みくださ／い。」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-form__submit {

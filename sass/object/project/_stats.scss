@@ -64,6 +64,9 @@
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.6;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「病院1・40／床）」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // ---- 稼働時間（主役） ----

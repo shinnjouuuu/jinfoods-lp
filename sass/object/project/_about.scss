@@ -198,6 +198,9 @@
   font-size: 0.75rem;  // 0.75rem=12px
   line-height: 1.6;
   color: var(--color-text-note);
+  // 語の途中で折らない（S-53：「調理ス／タッフ」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-about__door-arrow {

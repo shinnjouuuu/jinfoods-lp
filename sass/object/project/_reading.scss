@@ -78,6 +78,9 @@ $_toggle-space: 8rem;  // 8rem=128px（「続きを読む＋」約90px＋すき�
   font-size: fluid(14px, $_lead-max);
   line-height: $_lead-line;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「欠かせ／ない」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 
   @include mq-up("md") {
     padding-inline-end: $_toggle-space;

@@ -46,4 +46,7 @@
   color: var(--color-text-sub);
   // 読み幅は 65 文字相当で止める
   max-inline-size: 40em;
+  // 語の途中で折らない（S-53：「提供／しています」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }

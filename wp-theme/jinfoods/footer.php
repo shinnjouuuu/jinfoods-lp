@@ -17,8 +17,8 @@ $tel = jinfoods_tel();
              alt="<?php bloginfo( 'name' ); ?>" width="282" height="106" loading="lazy">
         <address class="l-footer__address">
           株式会社JINfoods<br>
-          〒870-0822　大分県大分市大道町5丁目3-32<br>
-          TEL：<a class="l-footer__tel" data-cta="tel-footer" href="<?php echo esc_attr( $tel['href'] ); ?>"><?php echo esc_html( $tel['display'] ); ?></a>　FAX：097-574-9235<br>
+          〒870-0822　大分県大分市大道町<span class="u-nowrap">5丁目3-32</span><br>
+          TEL：<a class="l-footer__tel" data-cta="tel-footer" href="<?php echo esc_attr( $tel['href'] ); ?>"><?php echo esc_html( $tel['display'] ); ?></a>　<span class="u-nowrap">FAX：097-574-9235</span><br>
           営業時間 6:00〜19:00／定休日なし
         </address>
       </div>

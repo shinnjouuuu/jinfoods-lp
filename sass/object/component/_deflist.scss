@@ -42,12 +42,18 @@ $_deflist-bp: 30rem;  // 30rem=480px
 .c-deflist__val {
   font-size: fluid(14px, 15px);
   line-height: 1.85;
+  // 語の途中で折らない（S-53：「洗浄な／どの」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-deflist__note {
   display: block;
   font-size: 0.8125rem;  // 0.8125rem=13px
   color: var(--color-text-note);
+  // 語の途中で折らない（S-53：「必要で／す」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // 定義リストの中のリンク。文中リンクだが電話など主要導線を含むので

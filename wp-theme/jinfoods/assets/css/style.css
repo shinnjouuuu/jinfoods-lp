@@ -577,6 +577,8 @@ html:has(:modal) {
   line-height: 1.8;
   color: var(--color-on-photo-sub);
   max-inline-size: 40em;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .l-pagehead--compact {
@@ -957,6 +959,8 @@ html:has(:modal) {
   line-height: 1.9;
   color: var(--color-text-sub);
   max-inline-size: 40em;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-callout {
@@ -989,12 +993,16 @@ html:has(:modal) {
   font-size: clamp(15px, 14.2957746479px + 0.1877934272vw, 17px);
   font-weight: 700;
   line-height: 1.6;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-callout__text {
   font-size: 0.8125rem;
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-callout__action {
@@ -1050,6 +1058,8 @@ html:has(:modal) {
   font-size: 0.6875rem;
   line-height: 1.6;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-stat--compact .c-stat__num {
@@ -1390,12 +1400,16 @@ html:has(:modal) {
 .c-deflist__val {
   font-size: clamp(14px, 13.6478873239px + 0.0938967136vw, 15px);
   line-height: 1.85;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-deflist__note {
   display: block;
   font-size: 0.8125rem;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-deflist__link {
@@ -1441,6 +1455,8 @@ html:has(:modal) {
   font-size: clamp(16px, 14.9436619718px + 0.2816901408vw, 19px);
   font-weight: 700;
   line-height: 1.6;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-prose__h3::before {
@@ -1485,6 +1501,8 @@ html:has(:modal) {
   font-size: clamp(13px, 12.6478873239px + 0.0938967136vw, 14px);
   line-height: 1.9;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-skip-link {
@@ -2020,6 +2038,8 @@ html:has(:modal) {
   font-size: 0.75rem;
   line-height: 1.6;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-about__door-arrow {
@@ -2077,6 +2097,8 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-stats__day {
@@ -2778,6 +2800,8 @@ html:has(:modal) {
   font-size: 0.9375rem;
   line-height: 1.85;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 @media (min-width: 600.02px) {
   .p-strength__other-text {
@@ -2934,6 +2958,8 @@ html:has(:modal) {
   font-size: 0.875rem;
   line-height: 1.85;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-field__list {
@@ -3033,6 +3059,8 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 @media (min-width: 768.02px) {
   .p-texture__desc {
@@ -3044,6 +3072,8 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.7;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-texture__layout {
@@ -3296,6 +3326,8 @@ html:has(:modal) {
   font-size: clamp(14px, 13.2957746479px + 0.1877934272vw, 16px);
   line-height: 2;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 @media (min-width: 768.02px) {
   .p-reading__lead {
@@ -3542,12 +3574,15 @@ html:has(:modal) {
   font-size: clamp(15px, 14.2957746479px + 0.1877934272vw, 17px);
   font-weight: 700;
   word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-area-map__source {
   font-size: 0.6875rem;
   line-height: 1.7;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-area-map.is-armed .p-area-map__spot {
@@ -3657,12 +3692,16 @@ html:has(:modal) {
   font-family: var(--font-head);
   font-size: clamp(16px, 15.2957746479px + 0.1877934272vw, 18px);
   font-weight: 700;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-company__member-text {
   font-size: 0.875rem;
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-company__quals {
@@ -3741,6 +3780,8 @@ html:has(:modal) {
 .p-company__history-text {
   font-size: 0.9375rem;
   line-height: 1.8;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-company__history.is-armed::before {
@@ -3994,6 +4035,8 @@ html:has(:modal) {
 .p-entry__prev {
   grid-area: prev;
   justify-self: start;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-entry__list {
@@ -4004,6 +4047,8 @@ html:has(:modal) {
 .p-entry__next {
   grid-area: next;
   justify-self: end;
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-arcgal__count {
@@ -4334,6 +4379,8 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.7;
   color: var(--color-text-note);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-form__status {
@@ -4429,6 +4476,8 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-form__submit {
@@ -4780,6 +4829,15 @@ html:has(:modal) {
 
 .u-full {
   inline-size: 100%;
+}
+
+.u-nowrap {
+  white-space: nowrap;
+}
+
+.u-phrase-wrap {
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .u-reveal {

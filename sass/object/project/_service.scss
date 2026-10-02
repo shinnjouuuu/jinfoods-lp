@@ -171,4 +171,7 @@ $_settle-stagger: 0.15s;
   font-size: 0.875rem;  // 0.875rem=14px
   line-height: 1.85;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「ご相談く／ださい」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }

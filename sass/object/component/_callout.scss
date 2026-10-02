@@ -38,12 +38,18 @@
   font-size: fluid(15px, 17px);
   font-weight: 700;
   line-height: 1.6;
+  // 語の途中で折らない（S-53：「ご覧いただけま／す」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-callout__text {
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.8;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「ご相談くださ／い。」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // ボタン（c-btn と Mix）。横1行のとき縮むと文字が割れる（一文の長い帯で、769〜873px に「相談す／る」）ので縮ませない

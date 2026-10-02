@@ -73,6 +73,9 @@ $_line-lag: 0.1s;
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.8;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「ご連絡くだ／さい。」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 
   @include mq-up("md") {
     grid-column: 1;
@@ -83,6 +86,9 @@ $_line-lag: 0.1s;
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.7;
   color: var(--color-text-note);
+  // 語の途中で折らない（S-53：「ミキ／サー」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // ---- 事業内容ページの並べ方 ----

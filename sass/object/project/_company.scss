@@ -106,12 +106,18 @@
   font-family: var(--font-head);
   font-size: fluid(16px, 18px);
   font-weight: 700;
+  // 語の途中で折らない（S-53：「調理スタ／ッフ」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-company__member-text {
   font-size: 0.875rem;  // 0.875rem=14px
   line-height: 1.8;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「確／かめます」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-company__quals {
@@ -198,6 +204,9 @@
 .p-company__history-text {
   font-size: 0.9375rem;  // 0.9375rem=15px
   line-height: 1.8;
+  // 語の途中で折らない（S-53：「…へ統／合」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 // JS（main.js の initHistory）が付ける状態。JS が無ければ最初から全部見えている

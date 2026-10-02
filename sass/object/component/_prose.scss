@@ -38,6 +38,9 @@
   font-size: fluid(16px, 19px);
   font-weight: 700;
   line-height: 1.6;
+  // 語の途中で折らない（S-53：「…につい／て」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .c-prose__h3::before {
@@ -84,4 +87,7 @@
   font-size: fluid(13px, 14px);
   line-height: 1.9;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「ご相／談」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }

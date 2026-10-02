@@ -92,6 +92,9 @@
 .p-entry__prev {
   grid-area: prev;
   justify-self: start;
+  // 語の途中で折らない（S-53：「前のお知ら／せ」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }
 
 .p-entry__list {
@@ -102,4 +105,7 @@
 .p-entry__next {
   grid-area: next;
   justify-self: end;
+  // 語の途中で折らない（S-53：「次のお知ら／せ」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 }

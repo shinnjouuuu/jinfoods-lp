@@ -303,6 +303,9 @@ $_steps-gap: 1rem;  // 1rem=16px
   font-size: 0.9375rem;  // 0.9375rem=15px
   line-height: 1.85;
   color: var(--color-text-sub);
+  // 語の途中で折らない（S-53：「つながりま／す。」と割れていた）。Safari は auto-phrase を知らないので keep-all（句読点で折る）が残る
+  word-break: keep-all;
+  word-break: auto-phrase;
 
   @include mq-up("tab") {
     display: block;

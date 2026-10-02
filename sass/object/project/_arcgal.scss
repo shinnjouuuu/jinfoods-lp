@@ -23,6 +23,7 @@
 }
 
 .p-arcgal__count-num {
+  // hallmark-ignore S-19 数字と「枚」の間だけ 2px（文字の中の間なので gap にできない）
   margin-inline-end: 0.125rem;  // 0.125rem=2px
   font-family: var(--font-en);
   font-size: 0.9375rem;  // 0.9375rem=15px

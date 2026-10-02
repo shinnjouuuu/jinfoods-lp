@@ -16,8 +16,8 @@ get_template_part( 'template-parts/pagehead' );
 
 <div class="l-under">
   <div class="l-inner l-under__body">
-    <?php // Block（p-arcgal）を section に Mix する（一覧の Element の親） ?>
-    <section class="l-under__block p-arcgal">
+    <?php // Block（p-arcgal）を Mix する（一覧の Element の親）。見出しの無い区画なので section ではなく div（2026-10-02、hallmark check P3。静的版と同じ） ?>
+    <div class="l-under__block p-arcgal">
       <div class="l-under__prose">
         <p>行事食は毎月ご用意しています。刻み食・ムース食など、食事形態を変えても彩りと形を残すよう心がけています。</p>
       </div>
@@ -80,7 +80,7 @@ get_template_part( 'template-parts/pagehead' );
           <p class="u-vh js-viewer-status" aria-live="polite"></p>
         </dialog>
       <?php endif; ?>
-    </section>
+    </div>
 
   </div>
 </div>

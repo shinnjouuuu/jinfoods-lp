@@ -1,3 +1,5 @@
+@use "sass:list";
+@use "sass:map";
 @use "../../foundation/variables" as *;
 
 // =============================================================
@@ -142,7 +144,8 @@ $_cols: (
 
 // マスの幅で中身を出し分ける境目（@container）。マスの高さは写真の行で決まるので、写真より高くならない量に絞る
 $_end-bp-title: 16.25rem;  // 16.25rem=260px。これ未満（1〜2マス）は「事業内容を見る」だけ
-$_end-bp-text: 25rem;      // 25rem=400px。題に加えて一文も
+$_end-bp-text: 30rem;      // 30rem=480px。題に加えて一文も。一文を足して写真より高くなるマスは最大 462px（5列・4マス・画面 601〜626px）なので、
+                           // それより上で余裕 4px のある 30rem（2026-10-02 実測。前の 25rem=400px では 601px で行が 2.4px 伸びていた）
 $_end-bp-row: 35rem;       // 35rem=560px。横1行（題と一文が左、リンクが右）
 
 // 締めのマスが行の k 番目に来たら、その行の残り（列数 − k + 1）マスに広げる。
@@ -161,6 +164,15 @@ $_end-bp-row: 35rem;       // 35rem=560px。横1行（題と一文が左、リ�
 
   @include _per-cols using ($n) {
     @include _end-span($n);
+  }
+
+  // 一番狭い列数（3列）で1行まるごと使うときは、$_end-bp-text（480px）に届かなくても一文を出す
+  //（画面 375/320px でマスは 343/288px）。写真の無い行なので、マスが高くなっても写真の行の高さは変わらない。
+  // 列数と範囲は $_cols から読む（範囲は2つ目のキーまで。いまは tab=600px。表を直せばここも追従する）
+  @include mq-down(list.nth(map.keys($_cols), 2)) {
+    &:nth-child(#{map.get($_cols, "base")}n + 1) .p-arcgal__end-text {
+      display: block;
+    }
   }
 }
 
@@ -218,13 +230,15 @@ $_end-bp-row: 35rem;       // 35rem=560px。横1行（題と一文が左、リ�
   font-size: fluid(15px, 17px);
   font-weight: 700;
   line-height: 1.6;
+  word-break: auto-phrase;  // 文節で折る（320px で「ご覧いただけ／ます」と割れていた）。Chrome 119〜、ほかはふつうの折り返し
 }
 
 .p-arcgal__end-text {
-  display: none;
+  display: none;  // 3列で1行まるごとのときは、.p-arcgal__end 側の mq-down で出す
   font-size: 0.8125rem;  // 0.8125rem=13px
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: auto-phrase;  // 320px で「対応／しています」と割れていた
 
   @container arcgal-end (min-width: #{$_end-bp-text}) {
     display: block;

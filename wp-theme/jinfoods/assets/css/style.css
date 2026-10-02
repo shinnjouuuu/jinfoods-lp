@@ -4165,6 +4165,11 @@ html:has(:modal) {
     grid-column: span 1;
   }
 }
+@media (max-width: 600px) {
+  .p-arcgal__end:nth-child(3n+1) .p-arcgal__end-text {
+    display: block;
+  }
+}
 
 .p-arcgal__end-link {
   display: flex;
@@ -4227,6 +4232,7 @@ html:has(:modal) {
   font-size: clamp(15px, 14.2957746479px + 0.1877934272vw, 17px);
   font-weight: 700;
   line-height: 1.6;
+  word-break: auto-phrase;
 }
 
 .p-arcgal__end-text {
@@ -4234,8 +4240,9 @@ html:has(:modal) {
   font-size: 0.8125rem;
   line-height: 1.8;
   color: var(--color-text-sub);
+  word-break: auto-phrase;
 }
-@container arcgal-end (min-width: 25rem) {
+@container arcgal-end (min-width: 30rem) {
   .p-arcgal__end-text {
     display: block;
   }

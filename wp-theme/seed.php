@@ -179,7 +179,7 @@ $thumbs = array(
 	'11月行事食'  => 'g-06.jpg',
 	'10月行事食'  => 'g-09.jpg',
 	// 「新規　委託開始」は写真を付けない（写真が記事の中身と関係ないため。2026-10-01 新庄さん判断）
-	'清瀬病院　給食委託厨房業務　開始のお知らせ' => 'g-10.jpg',
+	// 「清瀬病院　給食委託厨房業務　開始のお知らせ」も写真を付けない（前は g-10 を付けていたが、記事の中身と関係ないため。2026-10-02 新庄さん判断）
 );
 foreach ( $thumbs as $title => $file ) {
 	$found = get_posts( array( 'post_type' => array( 'post', 'gallery' ), 'title' => $title, 'post_status' => 'any', 'numberposts' => 1 ) );

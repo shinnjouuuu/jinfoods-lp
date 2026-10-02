@@ -97,7 +97,7 @@ get_header();
             </span>
             <span class="p-about__door-text">
               <span class="p-about__door-title">拠点と受託エリア</span>
-              <span class="p-about__door-note">本社から直線約20km圏内</span>
+              <span class="p-about__door-note">大分市・豊後大野市・別府市</span>
             </span>
             <span class="p-about__door-arrow" aria-hidden="true">→</span>
           </a>

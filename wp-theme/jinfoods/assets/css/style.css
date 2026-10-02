@@ -3541,6 +3541,7 @@ html:has(:modal) {
   font-family: var(--font-head);
   font-size: clamp(15px, 14.2957746479px + 0.1877934272vw, 17px);
   font-weight: 700;
+  word-break: keep-all;
 }
 
 .p-area-map__source {

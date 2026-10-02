@@ -103,6 +103,9 @@
   font-family: var(--font-head);
   font-size: fluid(15px, 17px);
   font-weight: 700;
+  // 文節の切れ目（HTML の <wbr>）でだけ折る。2026-10-02 に文を3市の名前に替えたら、375px で「ありま／す」と1字だけ落ちたため。
+  // auto-phrase は Safari で効かないので keep-all＋<wbr>（p-arcgal__end-go と同じ）。入りきらないときは body の overflow-wrap: anywhere が割る
+  word-break: keep-all;
 }
 
 // 下地の出典（国土数値情報の利用条件で表記が要る）。消さないこと

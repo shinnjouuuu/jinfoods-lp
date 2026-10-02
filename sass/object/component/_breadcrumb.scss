@@ -1,0 +1,77 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-breadcrumb（パンくず）
+// 既定はページ見出しの写真の上（暗い地）に置く色。明るい地に置くときは --on-light。
+// 色は変数（--_text など）で持ち、モディファイアは変数を書き換えるだけにする（c-btn の --_pad と同じ型）。
+// 2026-10-01：前は --on-light が「書いた順番」で元の :hover（白）に勝っていて、並べ替えると崩れた（sass-checker の指摘）
+// =============================================================
+.c-breadcrumb {
+  // 白の濃さは color-mix で書く（2026-10-02 に直書きの rgb をやめた。値は前と同じ）
+  --_text: color-mix(in srgb, var(--color-white) 72%, transparent);
+  // リンクは今のページ（白）より少しだけ落とす。2026-10-02 に .82→.90（ページ見出しの暗幕と合わせて 4.5:1 以上。_under.scss）
+  --_link: color-mix(in srgb, var(--color-white) 90%, transparent);
+  --_link-hover: var(--color-white);
+  --_current: var(--color-white);
+  --_sep: color-mix(in srgb, var(--color-white) 40%, transparent);
+
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--_text);
+}
+
+// 2026-10-02 に nav > span から nav > ol > li に（順番のある並びなので。hallmark check P3）。
+// 横に並べるのは ol（nav は名前と色だけを持つ）
+.c-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+
+.c-breadcrumb__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// 区切り記号は文字として置かず、装飾として出す（読み上げに乗せない）
+.c-breadcrumb__item + .c-breadcrumb__item::before {
+  content: "";
+  inline-size: 0.75rem;
+  block-size: 1px;
+  background-color: var(--_sep);
+}
+
+.c-breadcrumb__link {
+  // 12px の文字なので、行高ではなく最小の高さと幅で押せる範囲を確保する（「トップ」は文字だけだと幅 36px）
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: 2.75rem;  // 2.75rem=44px
+  min-block-size: 2.75rem;
+  color: var(--_link);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  transition: color var(--dur) var(--ease);
+
+  @include hover {
+    color: var(--_link-hover);
+  }
+}
+
+.c-breadcrumb__current {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;  // 2.75rem=44px
+  font-weight: 700;
+  color: var(--_current);
+}
+
+// 明るい地に置くとき（お知らせの記事ページの薄い見出し l-pagehead--compact）。2026-10-01 追加
+.c-breadcrumb--on-light {
+  --_text: var(--color-text-note);  // 生成り地 5.90:1（2026-10-01 の配色変更後に測り直した）
+  --_link: var(--color-text-sub);  // 生成り地 7.12:1
+  --_link-hover: var(--color-accent-deep);
+  --_current: var(--color-ink);
+  --_sep: var(--color-border-strong);
+}

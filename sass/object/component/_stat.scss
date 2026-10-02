@@ -1,0 +1,62 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-stat（数字ブロック）
+// =============================================================
+.c-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;  // 0.125rem=2px
+  text-align: center;
+}
+
+.c-stat__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-text-note);
+}
+
+.c-stat__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.125rem;  // 0.125rem=2px
+  font-family: var(--font-en);
+  color: var(--color-accent);
+  line-height: 1.1;
+}
+
+.c-stat__num {
+  font-size: fluid(34px, 48px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  // 桁が増減しても列がずれないようにする
+  font-variant-numeric: tabular-nums;
+}
+
+.c-stat__unit {
+  font-family: var(--font-base);
+  font-size: fluid(14px, 17px);
+  font-weight: 700;
+}
+
+// 数字ではなく語で見せる項目（有資格者・稼働時間）
+.c-stat__word {
+  font-family: var(--font-head);
+  font-size: fluid(15px, 19px);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-accent);
+}
+
+.c-stat__note {
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  line-height: 1.6;
+  color: var(--color-text-note);
+}
+
+// 狭い列に3つ並べるとき用（会社概要ページの地図の下）。数字だけ一回り小さくする
+.c-stat--compact .c-stat__num {
+  font-size: fluid(30px, 40px);
+}

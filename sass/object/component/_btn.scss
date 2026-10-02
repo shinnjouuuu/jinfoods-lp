@@ -1,0 +1,181 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-btn
+// margin / width を持たない（配置は親の責務）＝規約
+// モディファイアは単独では使わず、必ず c-btn と併記する
+//
+// 2026-09-30 にピル型をやめて四角にした（B案「一本線」）。
+//   主（--primary）は四角のベタ、FV とヘッダーの副は箱を持たない文字リンク（--text）。
+//   主と副の強さの差を、色ではなく「箱の有無」で付ける。
+//   押し込みの影もやめた（hover の明るい朱は白文字 4.29:1 で基準未満だったので、濃い朱 7.31:1 に）
+//   3案の比較：https://claude.ai/artifact/Hr72a8eBvXL6X667gqwKR2
+// =============================================================
+
+// hover の見た目は _variables.scss の mixin hover（マウスのある端末だけ＋Tab で選んだとき）
+
+
+.c-btn {
+  // 左右の余白は、モディファイアが変数で差し替える。
+  // 文字リンクの「余白0」は --_pad-text で持つ（--sm と併記しても、書いた順番に関係なく 0 が勝つ）
+  --_pad: #{fluid(20px, 30px)};
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  // タップ領域を確実に 44px 以上にする。
+  // 見た目の箱だけ大きくして a が inline のまま、という事故を防ぐため
+  // inline-flex ＋ min-block-size で自身に高さを持たせる
+  min-block-size: 3rem;
+  padding-inline: var(--_pad-text, var(--_pad));
+  font-family: var(--font-base);
+  font-size: 0.9375rem;  // 0.9375rem=15px
+  font-weight: 700;
+  line-height: 1.4;
+  border-radius: 0;
+  transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+// 押したときに 1px 沈む（影で押し込む表現はやめた）
+.c-btn:active {
+  transform: translateY(1px);
+}
+
+.c-btn__icon {
+  flex: none;
+  inline-size: 1.125em;
+}
+
+// 矢印は hover で少し進む
+.c-btn__arrow {
+  flex: none;
+  transition: transform var(--dur) var(--ease);
+}
+
+.c-btn {
+  @include hover {
+    .c-btn__arrow {
+      transform: translateX(0.25rem);
+    }
+  }
+}
+
+// ---- 塗り（主CTA）----
+// hover は濃い朱（白文字 7.31:1）。以前の明るい朱（accent-light）は 4.29:1 で基準未満だった
+.c-btn--primary {
+  color: var(--color-white);
+  background-color: var(--color-accent);
+}
+
+.c-btn--primary {
+  @include hover {
+    background-color: var(--color-accent-deep);
+  }
+}
+
+// ---- 線（副CTA）----
+.c-btn--outline {
+  color: var(--color-accent);
+  background-color: var(--color-white);
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+}
+
+.c-btn--outline {
+  @include hover {
+    color: var(--color-white);
+    background-color: var(--color-accent);
+  }
+}
+
+// ---- 電話（数字を読ませたいので左右非対称）----
+.c-btn--tel {
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  min-block-size: var(--btn-tall);
+  color: var(--color-ink);
+  background-color: var(--color-white);
+  box-shadow: inset 0 0 0 1.5px var(--color-border-strong);
+}
+
+.c-btn--tel {
+  @include hover {
+    box-shadow: inset 0 0 0 1.5px var(--color-accent);
+  }
+}
+
+.c-btn__tel-num {
+  font-family: var(--font-en);
+  // 狭い枠に入れるときは --compact が小さくする
+  font-size: var(--_tel-size, 1.25rem);  // 1.25rem=20px
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  // 番号の途中で折り返すと読めなくなるので絶対に折らない
+  white-space: nowrap;
+}
+
+.c-btn__tel-note {
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-note);
+  white-space: nowrap;
+}
+
+// ---- 色のついた地（セージ）の上に置く白ボタン ----
+// 2026-10-01 までは暗い地（締めの帯）用。いまは締めの案内（セージの地）で使う
+// 面が白なので注記色はそのままで読める（--color-text-note は白地想定）
+.c-btn--light {
+  color: var(--color-ink);
+  background-color: var(--color-white);
+}
+
+// 白 → 生成りだけでは明るさの差が 1.07倍しかなく、影も無いので、文字も濃い朱にする
+.c-btn--light {
+  @include hover {
+    color: var(--color-accent-deep);
+    background-color: var(--color-paper);
+  }
+}
+
+// ---- 小さめ（ヘッダー用）----
+// 文字リンクと併記するときは、中の矢印線も c-arrow-line--sm（20px）にする
+.c-btn--sm {
+  --_pad: 1.125rem;  // 1.125rem=18px
+
+  min-block-size: 2.75rem;  // 2.75rem=44px
+  font-size: 0.875rem;  // 0.875rem=14px
+}
+
+// ---- 詰め（狭い枠に入れるとき）----
+// SP のドロワーで、電話をお問い合わせと半分ずつ並べるときと、締めの帯の入口4つ（p-contact__doors）の電話に使う。
+// 375px で電話の受付時間（130px）が既定の左右 20px では 2px 入らなかったので、余白と番号を小さくする
+.c-btn--compact {
+  --_pad: 0.75rem;  // 0.75rem=12px
+  --_tel-size: 1.0625rem;  // 1.0625rem=17px
+}
+
+// ---- テキストリンク型（副CTA・「一覧を見る」など）----
+// 箱を持たず、文字の右に朱の長い矢印線（c-arrow-line）。hover で線が伸び、文字が濃い朱になる。
+// 線は部品なので、ここでは --arrow-grow を --line-grow に書き換えるだけ（線の transform には触らない）。
+// 小さめ（--sm）には c-arrow-line--sm、戻る向き（「前のお知らせ」）には c-arrow-line--back を組む。
+// 文字は本文色（生成り地で 15.88:1）、hover の濃い朱は 6.80:1。
+// 明るい地（白・生成り・セージ）専用。写真の上には置かない
+.c-btn--text {
+  --_pad-text: 0;
+
+  // タップ領域を 44px 確保する。テキストリンク型でも 2.5rem(40px) では足りない
+  min-block-size: 2.75rem;  // 2.75rem=44px
+  gap: 0.75rem;  // 0.75rem=12px
+  color: var(--color-ink);
+
+  @include hover {
+    --arrow-grow: var(--line-grow);
+
+    color: var(--color-accent-deep);
+  }
+}

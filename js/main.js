@@ -432,13 +432,25 @@
     const detailOf = (pin) => document.getElementById(pin.getAttribute('aria-controls'));
     const isOpen = (pin) => pin.getAttribute('aria-expanded') === 'true';
 
+    // 押して出た詳細を読み上げる欄（u-vh・aria-live）。詳細そのものは hidden の出し入れなので、
+    // 入れ物に aria-live を付けるより確実に読まれる（2026-10-02、hallmark check P3）
+    const status = document.querySelector('.js-facility-status');
+    // 案内「施設名を押すと…」は JS が動いたときだけ出す（JS が無いと詳細は出ないため）
+    const hint = document.querySelector('.js-facility-hint');
+    if (hint) hint.hidden = false;
+
     const setOpen = (pin, open) => {
       pin.setAttribute('aria-expanded', String(open));
       const detail = detailOf(pin);
       if (detail) detail.hidden = !open;
+      // 同じ施設を開き直したときも読まれるよう、閉じたら空にして、開くときは次の描画で書く
+      if (status && open && detail) requestAnimationFrame(() => { status.textContent = detail.textContent.replace(/\s+/g, ' ').trim(); });
     };
 
-    const closeAll = () => pins.forEach((pin) => setOpen(pin, false));
+    const closeAll = () => {
+      pins.forEach((pin) => setOpen(pin, false));
+      if (status) status.textContent = '';
+    };
 
     pins.forEach((pin) => {
       pin.addEventListener('click', () => {

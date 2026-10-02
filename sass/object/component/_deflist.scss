@@ -1,0 +1,63 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-deflist（会社概要などの定義リスト）
+// 現行は table で組まれていてSPで崩れるため、dl + grid にする
+// =============================================================
+// 置き場所がこれ未満なら、md 以上でも見出しと値を積む
+$_deflist-bp: 30rem;  // 30rem=480px
+
+.c-deflist {
+  // 2列にするかどうかを、置き場所の幅でも決める（下の @container）。
+  // お問い合わせページの PC では右の細い列（約390px）に入り、2列だと値の欄が約200px で折れていた。
+  // 注意：幅が中身で決まる所（flex の横並びで幅 auto・inline-block・float・absolute・fit-content・grid の auto 列）に置くと幅0に潰れる
+  container: deflist / inline-size;
+  display: grid;
+  border-block-start: 1px solid var(--color-border);
+}
+
+.c-deflist__row {
+  display: grid;
+  gap: 0 fluid(16px, 32px);
+  padding-block: fluid(12px, 16px);
+  border-block-end: 1px solid var(--color-border);
+
+  @include mq-up("md") {
+    // 見出し列は語の長さに意味があるので固定でよい（規約の例外）。
+    // 置き場所が $_deflist-bp 未満なら、見出しを上・値を下に積んだまま
+    @container deflist (min-width: #{$_deflist-bp}) {
+      grid-template-columns: 10rem minmax(0, 1fr);
+      align-items: baseline;
+    }
+  }
+}
+
+.c-deflist__key {
+  font-size: fluid(13px, 14px);
+  font-weight: 700;
+  line-height: 1.7;
+  color: var(--color-text-note);
+}
+
+.c-deflist__val {
+  font-size: fluid(14px, 15px);
+  line-height: 1.85;
+}
+
+.c-deflist__note {
+  display: block;
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  color: var(--color-text-note);
+}
+
+// 定義リストの中のリンク。文中リンクだが電話など主要導線を含むので
+// 行高ではなく最小高さでタップ領域を確保する
+.c-deflist__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;  // 2.75rem=44px
+  color: var(--color-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}

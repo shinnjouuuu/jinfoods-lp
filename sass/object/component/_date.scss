@@ -1,0 +1,14 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-date（お知らせの日付）— 2026-10-01 追加
+// 投稿の行リスト（c-post-list。トップのお知らせ・お知らせ一覧）・記事ページ（p-entry__meta）で同じ見た目。
+// 前は p-arcnews__date を記事ページでも借りていた（Element を Block の外で使う BEM 違反。sass-checker の指摘）
+// =============================================================
+.c-date {
+  font-family: var(--font-en);
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  font-weight: 500;
+  color: var(--color-text-note);
+  font-variant-numeric: tabular-nums;
+}

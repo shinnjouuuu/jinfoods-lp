@@ -1,0 +1,82 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-card
+// margin / width を持たない。並べ方と幅は親（grid の gap）が決める
+// =============================================================
+.c-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+// リンクになっているカードだけ持ち上げる
+.c-card--link:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.c-card__media {
+  // 画像の縦横比を固定して、読み込み前後で高さが動かないようにする
+  aspect-ratio: 16 / 10;
+  background-color: var(--color-sub);
+}
+
+.c-card__img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.c-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;  // 0.625rem=10px
+  padding: fluid(18px, 26px);
+}
+
+.c-card__title {
+  font-family: var(--font-head);
+  font-size: fluid(17px, 20px);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.c-card__text {
+  font-size: 0.875rem;  // 0.875rem=14px
+  line-height: 1.9;
+  color: var(--color-text-sub);
+}
+
+// 本文とリンクの間を空けて、リンクを下端に揃える
+.c-card__foot {
+  // hallmark-ignore S-19 本文とリンクの間を空けて、リンクを下端に揃える（flex の auto）
+  margin-block-start: auto;
+  padding-block-start: 0.25rem;
+}
+
+// アイコン＋見出しを横に並べる型（強み）
+.c-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;  // 0.625rem=10px
+}
+
+.c-card__icon {
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent-pale);
+  color: var(--color-accent);
+}
+
+.c-card__icon-svg {
+  inline-size: 1.375rem;  // 1.375rem=22px
+}

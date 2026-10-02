@@ -1,0 +1,41 @@
+<fieldset class="p-form__row">
+  <legend class="p-form__label p-form__label--legend">お問い合わせの種類<span class="p-form__req">必須</span></legend>
+  [radio subject class:p-form__choices use_label_element "業務のご相談" "試食のご依頼" "採用について" "その他"]
+  <p class="p-form__more"><a class="c-btn c-btn--text c-btn--sm" href="/recruit/">募集要項を見る<span class="c-arrow-line c-arrow-line--sm" aria-hidden="true"></span></a></p>
+</fieldset>
+<div class="p-form__pair">
+  <div class="p-form__row">
+    <label class="p-form__label" for="f-name">お名前<span class="p-form__req">必須</span></label>
+    [text* your-name id:f-name class:p-form__input autocomplete:name]
+  </div>
+  <div class="p-form__row">
+    <label class="p-form__label" for="f-company">会社名・施設名<span class="p-form__opt">任意</span></label>
+    [text your-company id:f-company class:p-form__input autocomplete:organization]
+  </div>
+</div>
+<div class="p-form__pair">
+  <div class="p-form__row">
+    <label class="p-form__label" for="f-tel">電話番号<span class="p-form__opt">任意</span></label>
+    [tel your-tel id:f-tel class:p-form__input autocomplete:tel]
+  </div>
+  <div class="p-form__row">
+    <label class="p-form__label" for="f-email">メールアドレス<span class="p-form__req">必須</span></label>
+    [email* your-email id:f-email class:p-form__input autocomplete:email]
+  </div>
+</div>
+<div class="p-form__row">
+  <label class="p-form__label" for="f-body">お問い合わせ内容<span class="p-form__req">必須</span></label>
+  [textarea* your-message x4 id:f-body class:p-form__textarea]
+  <p class="p-form__hint" id="f-body-hint" data-describes="f-body">施設名・おおよその食数・ご希望の開始時期などをご記入いただけると、ご返答がスムーズです。</p>
+</div>
+<div class="p-form__consent">
+  [acceptance consent id:f-consent class:p-form__check]
+  <p class="p-form__consent-text">
+    <label class="p-form__consent-label" for="f-consent">個人情報の取り扱いに同意する<span class="p-form__req">必須</span></label>
+    <span class="p-form__consent-note">送信の前に<a href="/privacy/" target="_blank" rel="noopener">プライバシーポリシー<span class="u-vh">（新しいタブで開きます）</span></a>をお読みください。</span>
+  </p>
+</div>
+<div class="p-form__verify">[turnstile size:flexible theme:light]</div>
+<div class="p-form__submit">
+  <button class="c-btn c-btn--primary" type="submit">この内容で送信する<span class="c-btn__arrow" aria-hidden="true">→</span></button>
+</div>

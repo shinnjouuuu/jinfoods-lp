@@ -1,0 +1,258 @@
+@use "sass:map";
+@use "sass:math";
+
+// =============================================================
+// 【このファイルの読み方】
+//
+// ■ rem と px の換算
+//   1rem = 16px。よく出る端数はこの3つ。
+//     0.6875rem = 11px   … 注記・キャプション
+//     0.8125rem = 13px   … 補足文
+//     0.875rem  = 14px   … 小さめの本文
+//     0.9375rem = 15px   … ボタンの文字
+//     2.75rem   = 44px   … 【重要】タップ領域の下限。これを下回らせない
+//   端数の rem には行末に px 換算をコメントで付けてある。
+//
+// ■ 2.75rem（44px）が何度も出てくる理由
+//   指で押す領域の下限。WCAG 2.2 の最低基準は 24px だが、
+//   実機で押し間違いが出るため 44px を社内基準にしている。
+//   min-block-size で確保する（padding だと文字量で変わってしまう）。
+//
+// ■ fluid(a, b) の読み方
+//   画面 375px のとき a、1440px のとき b。その間は連続して変わる。
+//   外側は clamp が固定するので、375px 未満でも a より小さくならない。
+//     例）fluid(28px, 44px)
+//         → 画面375pxで28px、1440pxで44px
+//         → 出力は clamp(28px, 22.3px + 1.5vw, 44px)
+//   コンパイル後の CSS は clamp() だけになって元の数字が消えるので、
+//   直すときは必ずこの sass/ 側を見ること。
+//
+// ■ ブレイクポイント
+//   sm 375 / md 768 / nav 1000 / lg 1140。
+//   nav を md と別に切っている理由は $bp の下のコメントを参照。
+//
+// ■ 色
+//   --color-* を必ず経由する。生の #hex を直接書かない。
+//   白文字を --color-accent に乗せたときのコントラストは 5.32:1（AA準拠）。
+// =============================================================
+
+// =============================================================
+// デザイントークン
+// 色・余白・BPは必ずここを経由する（直書き禁止）
+// =============================================================
+
+// ブレイクポイント
+// sm=375（最小サポート幅）/ tab=600（部品の3列化。左右余白は変えない）/ md=768（左右余白と段組みの境界）
+// nav=1000（ナビ5項目＋TEL＋CTA2つがロゴと同じ行に収まる幅）/ lg=1140（コンテンツ幅）
+//
+// nav を md と別に切る理由：ヘッダーの要素数が多く、768px ではロゴと同居できない。
+// ヘッダー・ハンバーガー・ドロワー・SP固定バーは全部 nav で切り替える。
+// バラバラに切ると 768〜999px で「ナビもCTAも無い」穴ができる。
+$bp: (
+  "sm": 375px,
+  "tab": 600px,  // スマホ横・小さいタブレット。SP の1列が間延びする部品だけ、ここで段組みを変える
+  "md": 768px,
+  "nav": 1000px,
+  "lg": 1140px,
+);
+
+// モバイルファーストで統一。分岐は mq-up 一本。max-width 側の mixin は用意しない
+//（両方あると 768px ちょうどの扱いがぶれる）
+// 「768px以下はSP」の仕様に合わせ、mq-up は指定値を含まない（+0.02px）
+@mixin mq-up($key) {
+  @media (min-width: (map.get($bp, $key) + 0.02px)) {
+    @content;
+  }
+}
+
+// 流動サイズ：$minVw で $min、$maxVw で $max、間を vw で連続補間。
+// 端の外は clamp が固定する。引数は必ず px で統一（$slope を無単位にするため）
+// 例）fluid(28px, 46px) → clamp(28px, 21.6px + 1.7vw, 46px)
+@function fluid($min, $max, $minVw: 375px, $maxVw: 1440px) {
+  $slope: math.div($max - $min, $maxVw - $minVw);
+  $base: $min - $slope * $minVw;
+  @return clamp(#{$min}, #{$base} + #{$slope * 100}vw, #{$max});
+}
+
+// マウスのある端末（hover できる端末）だけに当てる。画面の幅ではなく、入力の種類で分けるとき
+@mixin can-hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+// hover の見た目は、マウスのある端末だけに出す（タップのあとに残らないように）。
+// Tab で選んだとき（:focus-visible）にも同じ見た目を出す。c-btn・l-drawer・p-service で共有
+@mixin hover {
+  @include can-hover {
+    &:hover {
+      @content;
+    }
+  }
+
+  &:focus-visible {
+    @content;
+  }
+}
+
+// 節の上端を波で切る（2026-10-01 配色変更「朱×セージ」。節の境目を直線で切り替えると硬く見えるため）。
+// 前の節に --wave-height だけ重ねて、重なった帯を mask で曲線に抜く。抜けた所には前の節の地が見える。
+// 上の余白に同じ高さを足すので、重ねたぶんと相殺されて節の高さは変わらない。
+// mask を書くのはここだけ（l-section--wave と l-footer が使う）。$shape：1＝左が低く右へ下がる／2＝左が高く右へ上がる
+// $pad-start：重ねる前の上の余白（mask で抜いた帯のぶんを足して padding-block-start に入れる）
+$_wave-shapes: (
+  1: "M0 52C220 14 470 2 760 26s520 52 680 6V80H0z",
+  2: "M0 30C180 62 420 70 700 44S1180 2 1440 40V80H0z",
+);
+
+// padding-block-start を上書きするので、padding-block より後ろで include すること
+@mixin wave-top($shape: 1, $pad-start: var(--section-pad-block)) {
+  margin-block-start: calc(var(--wave-height) * -1);
+  padding-block-start: calc(#{$pad-start} + var(--wave-height));
+  @include wave-mask($shape);
+}
+
+// 波の形だけ差し替えるとき（重なりと余白は wave-top のまま）
+@mixin wave-mask($shape) {
+  @if not map.has-key($_wave-shapes, $shape) {
+    @error "wave-mask：波の形 #{$shape} はありません（1 か 2）";
+  }
+
+  $_svg: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='#{map.get($_wave-shapes, $shape)}'/%3E%3C/svg%3E";
+  // 1枚目：上端の帯を波の形に抜く／2枚目：帯より下は全部見せる。
+  // 2枚目は 1px 上から始めて重ねる（--wave-height は流動値で端数の px になり、つなぎ目に細い線が出ないように）。
+  // #000 は mask の「不透明」の意味で、見える色ではない
+  $_mask: url("#{$_svg}") top center / 100% var(--wave-height) no-repeat,
+    linear-gradient(#000 0 0) 0 calc(var(--wave-height) - 1px) / 100% 100% no-repeat;
+
+  -webkit-mask: $_mask;
+  mask: $_mask;
+}
+
+// 朱の矢印線の描き方は c-arrow-line（object/component/_arrow-line.scss）1か所だけ。
+// 2026-10-01 まではここに mixin arrow-line を置き、c-btn__line と c-arrow-line で共有していた
+
+:root {
+  // ---- カラー ----
+  // 面
+  // 2026-10-01 配色変更「朱×セージ」：淡い色が全部赤寄り（桃・赤みの生成り）だとページ全体が朱に引っぱられて硬く見えるので、
+  // 生成り・淡面・淡い朱を黄み〜橙寄りへ動かした。前の値は DESIGN.md §2
+  --color-white: #ffffff;
+  --color-paper: #fbf7ee;      // 交互セクションの地。FV の写真の霧もこの色を読む（fv-steam.js）
+  --color-sub: #f3ecde;        // 淡面（写真の読み込み前の地・タグ）
+
+  // アクセント（朱）。白文字を乗せてコントラスト 5.32:1（AA準拠）
+  --color-accent: #c8322c;
+  --color-accent-deep: #a5241f;   // 主ボタン・文字リンクの hover、小さい朱文字（セージ地の上の小さい朱文字もこれ）
+  --color-accent-pale: #fcefe7;   // ごく薄い面（アイコン地・5段階の図の地）
+
+  // セージ（2つ目の地）。朱でも暗い色でもない淡い地を足して、赤と暗さを散らす（2026-10-01）
+  // セージの上で朱の小さい文字は 4.22:1 で基準未満。小さい朱文字は accent-deep（5.80:1）にする
+  // 地の色なので2トーン（地・線）。文字は本文・補足・注記の3色で足りるので、濃いセージは作らない
+  --color-sage: #e8e6d1;        // 節の地（l-section--sage）・受託エリアの図の受託先の市
+  --color-sage-line: #cbc8a6;   // セージの地の上の区切り線・受託先の市の外周線
+
+  // テキスト
+  --color-ink: #1f1b19;
+  --color-text: var(--color-ink);
+  --color-text-sub: #5a5250;
+  // 注記色。#8a807d だと paper 地でコントラストが 4.1 まで落ちて AA を割るため沈めている。
+  // 2026-10-01 にセージの地（4.55:1 だった）に合わせてもう1段（#6e6462 → #675e5b。セージ 5.01:1・生成り 5.90:1）
+  --color-text-note: #675e5b;
+
+  // 未記載・要確認を示す色（採用要項の空欄など）
+  --color-warn: #8f5d07;
+  --color-warn-bg: #faf2e2;
+
+  // 入力の誤りと「送れなかった」知らせ（WP のお問い合わせ・Contact Form 7）。朱の濃い方と淡い面の別名。
+  // 朱と同じ色相なので、色だけで伝えず必ず文で書く
+  --color-error: var(--color-accent-deep);
+  --color-error-bg: var(--color-accent-pale);
+
+  --color-border: #e8dfd0;
+  --color-border-strong: #d2c6b2;
+  --color-focus: #1a73e8;
+  // フォーカスの輪。値を各所に直書きしない（_base / _facility / _about で使う）
+  --focus-ring: 3px solid var(--color-focus);
+  --focus-offset: 2px;
+
+  // ダーク面。2026-10-01 から節の地には使わない（暗い帯をやめた）。写真に乗せる幕・拡大表示・生成画像の札だけ
+  --color-dark: #241f1d;
+  --color-on-dark: #d8cfc9;
+
+  --color-veil: rgb(255 255 255 / 0.94);
+  // 写真に重ねる墨の幕（トップの食事ギャラリー・食事ギャラリーのページ）。白い文字は幕の上で最低 10.09:1（実ピクセル）
+  --color-veil-dark: color-mix(in srgb, var(--color-dark) 85%, transparent);
+  // 写真に重ねる生成りの幕（トップの数字の節）。0.9 が DESIGN.md のコントラスト（補足 5.68:1・濃い朱 5.45:1）の前提
+  --color-veil-paper: color-mix(in srgb, var(--color-paper) 90%, transparent);
+  // 下層のページ見出しの写真に重ねる暗幕の色（濃さは _under.scss の color-mix で段階をつける）。2026-10-02 にトークンにした
+  --color-scrim: #14100f;
+  // 写真の上の補足文（ページ見出しの説明文）。白を 88%
+  --color-on-photo-sub: color-mix(in srgb, var(--color-white) 88%, transparent);
+  --shadow-card: 0 2px 10px rgb(31 27 25 / 0.06);
+  --shadow-bar: 0 -4px 12px rgb(31 27 25 / 0.08);
+
+  // ---- タイポグラフィ ----
+  // 2026-09-30 夜 B案：読み込むのは見出しの Zen角ゴシック（700）と英数字の Jost（500・700）だけ。本文は端末の書体。
+  // 読み込みは各ページの <head>（WP は inc/enqueue.php）。太さや書体を足すときは、読み込みの URL も直す
+  // 本文：Mac・iPhone はヒラギノ、Windows は游ゴシック（標準の太さが細いので Medium を先に）、無ければメイリオ。
+  // 游ゴシックの日本語名（游ゴシック Medium・游ゴシック体）と YuGothic は古い IE 向けの別名なので足さない（2026-10-01）
+  --font-base: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
+  --font-head: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
+  --font-en: "Jost", "Helvetica Neue", Arial, sans-serif;
+
+  // ---- 重なり順 ----
+  // 各パーシャルに数字を散らすと前後関係が追えなくなるので集約する
+  // 下層のページ見出し（l-pagehead）は 背景写真 → 暗幕 → 文字 の3層。
+  // （2026-09-30 まで FV と共用で --z-fv-* という名前だった。いまの --z-fv-* は FV の写真の層用で、別物）
+  --z-pagehead-bg: 1;
+  --z-pagehead-scrim: 2;
+  --z-pagehead-copy: 3;
+  // FV：写真の層（奥）の上に縦組みとボタンを重ねる
+  --z-fv-photo: 0;
+  --z-fv-copy: 1;
+  // トップの受託施設一覧：押している点を前に出す（地図の土台 p-facility__stage が isolation で閉じる）
+  --z-facility-pin-active: 1;
+  --z-drawer: 9000;
+  // ヘッダーはドロワーより前。ドロワーが覆うとハンバーガー（開いている間は×に変形）が
+  // 隠れて閉じられなくなるため、必ずドロワーより上に置く
+  --z-header: 9100;
+  // SP 固定バーはページの上ではドロワーより前。ただしドロワーを開いている間は下へ隠す
+  // （2026-09-30：前に出したままだと、ドロワーの一番下の電話を最大75px隠していた。電話はドロワーの中にある）
+  --z-spbar: 9500;
+  // 「本文へスキップ」は Tab で選んだときだけ出る。ヘッダー・SP 固定バーより前に出す（2026-10-02）
+  --z-skip: 9600;
+
+  // ---- 形・動き ----
+  --radius-sm: 0.375rem;  // 0.375rem=6px
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 100rem;  // 100rem=1600px
+  // 電話ボタン（c-btn--tel：番号と受付時間の2行）の高さ。隣に並べて高さをそろえるボタンもこれを読む（採用ページの p-recruit__apply）
+  --btn-tall: 3.25rem;  // 3.25rem=52px
+  --dur: 0.3s;       // hover・開閉など、操作に即応するもの
+  --dur-slow: 0.8s;  // スクロールで出す・写真が入れ替わるなど、見せる動き
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  // 朱の矢印線（c-arrow-line）が hover で伸びる倍率。使う側が --arrow-grow をこれに書き換える（40px → 64px）
+  --line-grow: 1.6;
+
+  // ---- レイアウト ----
+  --content-width: 1140px;   // PC時のコンテンツ幅
+  --inner-pad: 1rem;         // 768px以下の左右余白
+  --header-height: 3.5rem;  // 3.5rem=56px
+  --section-pad-block: 3.5rem;  // 3.5rem=56px
+  // 節の境目の波の高さ（mixin wave-top）。前の節の下の余白（56／88px）より必ず低くする
+  --wave-height: #{fluid(22px, 60px)};
+  // SP固定バー。フッターの下余白がこれを参照する（バーが本文を隠さないように）
+  --spbar-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));  // 3.5rem=56px
+
+  @include mq-up("md") {
+    --inner-pad: 2rem;       // PC時の内側余白
+    --section-pad-block: 5.5rem;  // 5.5rem=88px
+  }
+
+  @include mq-up("nav") {
+    --header-height: 5rem;
+    --spbar-height: 0rem;    // ヘッダーにCTAが並ぶので固定バーは不要
+  }
+}

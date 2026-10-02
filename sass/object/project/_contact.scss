@@ -1,0 +1,78 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// p-contact（締めCTA）
+// 地は HTML の l-section--sage（2026-10-01 配色変更「朱×セージ」）。
+// 前は暗い地に厨房の写真を 22% で敷いていたが、暗い帯をなくすため写真ごとやめた（p-contact__bg は削除）
+// =============================================================
+.p-contact__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: fluid(16px, 24px);
+  text-align: center;
+}
+
+.p-contact__title {
+  font-family: var(--font-head);
+  font-size: fluid(21px, 32px);
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.p-contact__text {
+  font-size: fluid(14px, 16px);
+  line-height: 1.9;
+  color: var(--color-text-sub);
+  max-inline-size: 38em;
+  // 「お｜気軽に」（375）「担｜当者」（1440）と語の途中で割れていた（2026-10-01 hallmark check S-53）。
+  // auto-phrase は Chrome だけなので、Safari 向けに keep-all（読点・句点でだけ折る）を先に置く。
+  // Safari は auto-phrase を知らずに読み飛ばすので keep-all が残る。長い語の突き破りは body の overflow-wrap が止める
+  word-break: keep-all;
+  word-break: auto-phrase;
+}
+
+.p-contact__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  inline-size: 100%;
+  max-inline-size: 22rem;  // 22rem=352px
+
+  @include mq-up("md") {
+    flex-direction: row;
+    justify-content: center;
+    inline-size: auto;
+    max-inline-size: none;
+  }
+}
+
+// 施設の担当者向けの入口4つ（2026-10-01 D案）：試食のご依頼／業務のご相談／採用について／電話。
+// 4つとも同じ幅・同じ高さにそろえる。採用ページ（応募向け）は上の __cta（ボタン2つ）のまま。
+// 375px で2列×2段、320px は縦に4つ（電話の番号が 140px の枠に入らないため）、tab から2列×2段、md から横に4つ
+.p-contact__doors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));  // 9.5rem=152px
+  gap: 0.75rem;  // 0.75rem=12px
+  // 段の高さは一番高い入口（電話の2行＝52px）にそろえる。2段になる幅でも、文字を大きくして2行になっても段ごとにずれない
+  grid-auto-rows: 1fr;
+  inline-size: 100%;
+  max-inline-size: 22rem;  // 22rem=352px（SP は前のボタン2つと同じ幅）
+
+  @include mq-up("tab") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-inline-size: 36rem;  // 36rem=576px
+  }
+
+  @include mq-up("md") {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-inline-size: 60rem;  // 60rem=960px
+  }
+}
+
+// 電話は、ほかの入口と同じく中を中央にそろえる
+.p-contact__doors > .c-btn--tel {
+  align-items: center;
+}

@@ -1,0 +1,130 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// p-gallery（トップの食事ギャラリー）
+// 料理写真だけを並べる。厨房・人物は about / strength 側に置き、混ぜない
+//
+// 2026-10-01 作り直し（日清医療食品の「乗せると幕」の型・B「墨の幕」）
+// https://claude.ai/artifact/3B1c5L8M8g4uVjRPQEN6Pn
+// 写真は1枚ずつギャラリーへのリンク。説明の出し方は hover の有無で分ける（画面の幅ではない）：
+// - タッチの端末（土台）：写真の下に説明。写真は4枚に絞る（スマホの5案の S1）
+//   https://claude.ai/artifact/Q6tRqoNuVnqYumGXhQj45M
+// - hover できる端末：普段は写真だけ。乗せたとき・Tab で選んだときに墨の幕と説明と丸い矢印
+// 読み上げは写真の代わりの文（説明と同じ文）に任せ、説明の要素は aria-hidden
+// =============================================================
+
+// 幕の色は _variables.scss の --color-veil-dark（--color-dark を 85%。白い文字は幕の上で最低 10.09:1、実ピクセル）
+
+.p-gallery__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: fluid(8px, 12px);
+
+  // 前は md から4列。768px で2列のまま写真が 364px になり、節が 1,813px あった
+  @include mq-up("tab") {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+// タッチの端末では4枚に絞る（説明を足した分、縦に長くならないように。続きはギャラリーページへ）
+.p-gallery__item:nth-child(n+5) {
+  @media (hover: none) {
+    display: none;
+  }
+}
+
+// 写真の枠（c-media）と説明（幕）をまとめたリンク。角は c-media が持つ
+.p-gallery__link {
+  position: relative;
+  display: block;
+  color: var(--color-ink);
+
+  // 全体共通のフォーカスの輪は角 2px なので、写真の角（--radius-md）にそろえる
+  &:focus-visible {
+    border-radius: var(--radius-md);
+  }
+
+  @include hover {
+    .p-gallery__veil {
+      opacity: 1;
+    }
+
+    .p-gallery__go-icon {
+      transform: translate(0.125rem, -0.125rem);  // 0.125rem=2px（右上へ）
+    }
+  }
+}
+
+.p-gallery__img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+// 説明の入れ物。土台（タッチの端末）は写真の下に置く
+.p-gallery__veil {
+  display: block;
+  padding-block-start: 0.375rem;  // 0.375rem=6px
+
+  // hover できる端末：写真に重ねる墨の幕。普段は見えず、乗せると opacity だけで出す
+  // （重ねた層の入れ替え。滑り込ませない）
+  @media (hover: hover) {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.875rem;  // 0.875rem=14px
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-veil-dark);
+    color: var(--color-white);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease);
+  }
+}
+
+// 土台（写真の下）：13px・説明の色（白地で 7.62:1）
+.p-gallery__cap {
+  display: block;
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  line-height: 1.6;
+  color: var(--color-text-sub);
+  text-wrap: pretty;
+  word-break: auto-phrase;
+
+  @media (hover: hover) {
+    font-family: var(--font-head);
+    font-size: fluid(15px, 17px);
+    font-weight: 700;
+    color: inherit;
+    text-wrap: balance;
+  }
+}
+
+// 丸い矢印は幕の中だけ（タッチの端末では写真そのものがリンクなので出さない）
+.p-gallery__go {
+  display: none;
+
+  @media (hover: hover) {
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;  // 2.75rem=44px
+    block-size: 2.75rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-pill);
+  }
+}
+
+.p-gallery__go-icon {
+  inline-size: 1rem;
+  block-size: 1rem;
+  transition: transform var(--dur) var(--ease);
+}
+
+.p-gallery__foot {
+  display: flex;
+  justify-content: center;
+}

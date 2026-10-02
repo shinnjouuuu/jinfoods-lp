@@ -1,0 +1,51 @@
+@use "variables" as *;
+
+// =============================================================
+// Base：文書全体の既定値
+// =============================================================
+body {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  font-feature-settings: "palt" 1;
+  -webkit-font-smoothing: antialiased;
+  // 和文の組版（hallmark checks-ja S-40、2026-10-01）。入れる順もこの順：レイアウトを守るものが先
+  //   overflow-wrap: anywhere … 長い英数字（URL・メール）で箱を突き破らない。min-content も縮むので、flex の子は min-width:0 とセットで考える
+  //   line-break: strict      … 小さい「ゃ」「ッ」や長音「ー」を行頭に置かない（見出しは下で normal に戻す）
+  //   word-break: normal      … 和文は字の間で折る、の既定を明示しておく（部品ごとの keep-all / auto-phrase はそれぞれの所で上書き）
+  overflow-wrap: anywhere;
+  line-break: strict;
+  word-break: normal;
+  // SP固定バーぶん下を空ける。バーの高さはトークン1箇所で管理する
+  padding-bottom: var(--spbar-height);
+  // S-40 の4つ目 text-autospace（和文と英数字の間を空ける）は入れていない（2026-10-02、新庄さん「保留のまま」）。
+  // 入れると「株式会社 JINfoods」「5 段階」と見た目が変わり、375px で3つの段落の最後の行が「す。」「ん。」だけになった
+  // （事業内容の2段落・プライバシーポリシー1段落。text-wrap: pretty でも「ます。」が残る）。DESIGN.md §3
+}
+
+// 見出しは strict にすると不自然に詰まる・割れる（S-43）。本文とは別に戻す
+h1, h2, h3, h4, h5, h6 {
+  line-break: normal;
+}
+
+// キーボード操作のフォーカスは必ず見えるようにする
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: 2px;
+}
+
+// ドロワー展開中の背面スクロールを止める（JSが body に付ける）
+body.is-drawer-open {
+  overflow: hidden;
+}
+
+// <dialog> を showModal() で開いている間（写真の拡大表示 c-viewer など）も、背面をスクロールさせない。
+// :modal はブラウザが付ける状態なので、どの部品の名前も知らずに済む（2026-10-01）
+html:has(:modal) {
+  overflow: hidden;
+  // スクロールバーが消えた分だけページが横にずれないよう、その場所を残す（重ねて出す端末では何も変わらない）
+  scrollbar-gutter: stable;
+}

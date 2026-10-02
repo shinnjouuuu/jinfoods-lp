@@ -1,0 +1,52 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-callout（ほかのページへ送る帯）
+// 題・一文・ボタン1つ。カードと同列に並べず、トーンを落とした帯にする。
+// 事業内容ページ（企業・社員食堂の相談／受託施設一覧へ）で使う。食事ギャラリーの帯は 2026-10-02 に格子の最後のマス（p-arcgal__end）へ移した。
+// 題・一文の値は食事ギャラリーの締めのマス（p-arcgal__end-title／__end-text）と同じ。変えるときは両方と DESIGN.md の2か所
+// 2026-10-01 に p-service__aside から分けた。外側の余白と幅は持たない（置く側の gap が決める）
+// 線はカード（c-card）と同じ実線。点線は作りかけ・入力欄に見えたのでやめた（同日、比較の B）
+// https://claude.ai/artifact/1PtaY1Cj1Y7Bj9V9vkH2Aq
+// =============================================================
+.c-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;  // 0.625rem=10px
+  align-items: flex-start;
+  padding: fluid(18px, 26px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-paper);
+
+  @include mq-up("md") {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;  // 1.5rem=24px
+  }
+}
+
+.c-callout__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;  // 0.25rem=4px
+}
+
+.c-callout__title {
+  font-family: var(--font-head);
+  font-size: fluid(15px, 17px);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.c-callout__text {
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  line-height: 1.8;
+  color: var(--color-text-sub);
+}
+
+// ボタン（c-btn と Mix）。横1行のとき縮むと文字が割れる（一文の長い帯で、769〜873px に「相談す／る」）ので縮ませない
+.c-callout__action {
+  flex: none;
+}

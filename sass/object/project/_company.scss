@@ -1,0 +1,219 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// p-company（会社概要ページの本文）
+// 2026-09-30 コンペ D案。構造は C案「拠点の地図で見せる」を大元に、
+// A案の数字・年表と B案の体制を足したもの。
+//
+//   左（__side）：拠点の概略図＋数字3つ。nav 以上で sticky（数字は地図の凡例として一緒に止まる）
+//   右（__main）：体制 → 会社概要 → 沿革 の順に流れる
+//
+// 採らなかったもの：A案の「表を2列に割る」。右の列は 591px しかなく、
+// 2列にすると値の欄が約148pxになって住所が4行に折れる。
+// 代表あいさつは外した。先方が欲しいと言ったら「体制」と「会社概要」のあいだに節ごと足す
+// =============================================================
+// 2列にする幅は、ヘッダーの nav と同じ 1000px を借りている（左の列が約490pxになり、地図のラベルが読める下限）。
+// main.js の initAreaMap も同じ 1000.02px で判定しているので、変えるときは両方直す
+.p-company {
+  display: grid;
+  gap: fluid(32px, 56px);
+
+  @include mq-up("nav") {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: start;
+  }
+}
+
+// トップの ABOUT 節の入口（#team / #area / #profile）の受け皿。ヘッダーの下 1rem（16px）で止める。
+// ヘッダーの高さぶんは html の scroll-padding-top が持つので、ここは 1rem だけ
+// （2026-10-01 まで calc(ヘッダー + 1rem) で、ヘッダーぶんが二重にかかり 96px／SP 72px あいていた）
+.p-company__anchor {
+  scroll-margin-block-start: 1rem;
+}
+
+.p-company__side {
+  display: grid;
+  gap: 1rem;
+
+  // 左の地図＋数字は約608px（下地の出典1行を含む）。止めるのは、上端（ヘッダー＋16px）から数えて
+  // 画面に収まる高さ（720px 以上）のときだけ。1366×768 の画面（ブラウザの表示は約650px）で止めると、
+  // 数字の注記が切れたまま動かなくなる。main.js の initAreaMap も同じ条件（幅 1000.02px 以上かつ高さ 720px 以上）
+  @include mq-up("nav") {
+    @media (min-height: 720px) {
+      position: sticky;
+      inset-block-start: calc(var(--header-height) + 1rem);
+    }
+  }
+}
+
+.p-company__main {
+  display: grid;
+  gap: fluid(40px, 56px);
+}
+
+// ---- 数字3つ（地図の凡例） ----
+// 1px の gap に線の色を透かして、セルの区切り線にしている
+.p-company__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-border);
+}
+
+.p-company__stat {
+  padding: 0.875rem 0.375rem;  // 0.875rem=14px / 0.375rem=6px
+  background-color: var(--color-white);
+}
+
+// ---- 体制（3つの役割） ----
+.p-company__team {
+  display: grid;
+  gap: 1rem;
+}
+
+.p-company__member {
+  display: grid;
+  grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr);  // 8.5rem=136px
+  align-items: center;
+  gap: 1rem;
+
+  @include mq-up("md") {
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);  // 11rem=176px
+    gap: 1.25rem;
+  }
+  // 3行の出る時差は main.js の initReveal が付ける（80ms ずつ）
+}
+
+.p-company__member-body {
+  display: grid;
+  gap: 0.125rem;  // 0.125rem=2px
+  min-inline-size: 0;
+}
+
+.p-company__member-en {
+  font-family: var(--font-en);
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-deep);  // 小さい朱文字は濃い方
+}
+
+.p-company__member-role {
+  font-family: var(--font-head);
+  font-size: fluid(16px, 18px);
+  font-weight: 700;
+}
+
+.p-company__member-text {
+  font-size: 0.875rem;  // 0.875rem=14px
+  line-height: 1.8;
+  color: var(--color-text-sub);
+}
+
+.p-company__quals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;  // 0.875rem=14px
+  border-radius: var(--radius-md);
+  background-color: var(--color-paper);
+}
+
+.p-company__quals-label {
+  // hallmark-ignore S-19 ラベルとタグのあいだだけ広げる（gap はタグ同士と同じ幅になるため、ここだけ margin で足す）
+  margin-inline-end: 0.5rem;
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  font-weight: 700;
+  color: var(--color-text-note);
+}
+
+// ---- 会社概要の表：地図と連動する行 ----
+.p-company__spot {
+  transition: background-color var(--dur) var(--ease);
+}
+
+.p-company__spot.is-spot {
+  background-color: var(--color-accent-pale);
+}
+
+// ---- 沿革（縦の年表） ----
+// 右の列は狭いので PC でも縦のまま。線は transform だけで伸ばす
+.p-company__history {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;  // 1.25rem=20px
+  padding-inline-start: 1.875rem;  // 1.875rem=30px
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block: 0.625rem;  // 0.625rem=10px
+    inset-inline-start: 0.375rem;  // 0.375rem=6px
+    inline-size: 2px;
+    background-color: var(--color-border-strong);
+    transform-origin: top;
+    transition: transform calc(var(--dur-slow) * 1.75) var(--ease);
+  }
+}
+
+.p-company__history-item {
+  position: relative;
+  display: grid;
+  gap: 0.125rem;  // 0.125rem=2px
+  transition: opacity var(--dur-slow) var(--ease);
+
+  // 年の点
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.5rem;  // 0.5rem=8px
+    inset-inline-start: -1.875rem;  // 1.875rem=30px
+    inline-size: 0.875rem;  // 0.875rem=14px
+    block-size: 0.875rem;
+    border: 3px solid var(--color-accent);
+    border-radius: 50%;
+    background-color: var(--color-white);
+  }
+}
+
+.p-company__history-date {
+  font-size: 0.875rem;  // 0.875rem=14px
+  font-weight: 700;
+  color: var(--color-accent-deep);
+}
+
+.p-company__history-year {
+  // hallmark-ignore S-19 年の数字と「年」の間だけ 2px（文字の中の間なので gap にできない）
+  margin-inline-end: 0.125rem;  // 0.125rem=2px
+  font-family: var(--font-en);
+  font-size: fluid(24px, 32px);
+  line-height: 1.2;
+}
+
+.p-company__history-text {
+  font-size: 0.9375rem;  // 0.9375rem=15px
+  line-height: 1.8;
+}
+
+// JS（main.js の initHistory）が付ける状態。JS が無ければ最初から全部見えている
+.p-company__history.is-armed {
+  &::before { transform: scaleY(0); }
+
+  .p-company__history-item { opacity: 0; }
+}
+
+.p-company__history.is-armed.is-drawn {
+  &::before { transform: none; }
+
+  .p-company__history-item { opacity: 1; }
+
+  // 線が伸びるのに合わせて、上から順に出す
+  .p-company__history-item:nth-child(2) { transition-delay: calc(var(--dur-slow) * 0.45); }
+  .p-company__history-item:nth-child(3) { transition-delay: calc(var(--dur-slow) * 0.9); }
+  .p-company__history-item:nth-child(4) { transition-delay: calc(var(--dur-slow) * 1.35); }
+}

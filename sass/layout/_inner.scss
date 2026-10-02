@@ -1,0 +1,16 @@
+// =============================================================
+// inner パターン
+// max-width と左右 padding はここだけが持つ。
+// 子に固定幅をばらまかない（規約）
+// =============================================================
+.l-inner {
+  width: 100%;
+  max-width: calc(var(--content-width) + var(--inner-pad) * 2);
+  margin-inline: auto;
+  padding-inline: var(--inner-pad);
+}
+
+// 幅いっぱいに敷きたい面の中で、テキストだけ内側に寄せたいとき
+.l-inner--narrow {
+  max-width: calc(46rem + var(--inner-pad) * 2);  // 46rem=736px
+}

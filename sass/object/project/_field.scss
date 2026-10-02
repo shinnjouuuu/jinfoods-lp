@@ -1,0 +1,64 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// p-field（事業内容ページ「受託している2つの領域」）
+// section#field に Block を置き、高齢者施設給食・病院給食を文字の2列で並べる。
+// WP は固定ページ「事業内容」の本文（wp-theme/content/service.html）で同じクラスを使う。
+//
+// 2026-10-01 夕 コンペ B「写真を使わず、2領域を文字で」で作り直し。
+//   比較 https://claude.ai/artifact/WBvpVGjGaX2VZi4j7JJv5v
+//   前は写真つきのカード（c-card）2枚。2枚の写真は置き方まで同じで領域の区別がつかず、
+//   写真も文もトップの事業内容（p-service）と同じだった。写真はトップにだけ残す
+// =============================================================
+
+// 2列にしたときの、列と縦の線の間
+$_col-gap: fluid(24px, 48px);
+
+// 上端の線は濃いほうの枠線（見出し c-prose__h2 の朱の下線と2本並ばないように、朱にしない）。
+// tab（600px〜）から2列
+.p-field__list {
+  display: grid;
+  border-block-start: 1px solid var(--color-border-strong);
+
+  @include mq-up("tab") {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.p-field__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;  // 0.375rem=6px
+  padding-block: fluid(20px, 28px);
+  border-block-end: 1px solid var(--color-border);
+}
+
+// 2列のときは右の列の左に縦の線を引き、線の両側を同じだけあける。
+// 左右は並び順の奇数・偶数で分ける（項目が3つ以上になっても、左の列に線が付かない）
+.p-field__item:nth-child(odd) {
+  @include mq-up("tab") {
+    padding-inline-end: $_col-gap;
+  }
+}
+
+.p-field__item:nth-child(even) {
+  @include mq-up("tab") {
+    padding-inline-start: $_col-gap;
+    border-inline-start: 1px solid var(--color-border);
+  }
+}
+
+.p-field__name {
+  font-family: var(--font-head);
+  font-size: fluid(19px, 24px);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.p-field__text {
+  font-size: fluid(14px, 15px);
+  line-height: 1.9;
+  color: var(--color-text-sub);
+  // 375px で「稼働中で／す。」と最後の行が「す。」だけになっていた。語の切れ目で折る（p-strength__hero-text と同じ）
+  word-break: auto-phrase;
+}

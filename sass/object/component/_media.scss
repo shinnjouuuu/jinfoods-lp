@@ -1,0 +1,23 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-media（画像の枠）
+// 仮画像のうちは灰色。差し替え後も比率が変わらないよう aspect-ratio で固定する
+// =============================================================
+.c-media {
+  position: relative;  // 中に「イメージ」の札（c-image-note）を置けるように
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--color-sub);
+}
+
+.c-media__img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.c-media--16x9 { aspect-ratio: 16 / 9; }
+.c-media--4x3  { aspect-ratio: 4 / 3; }
+.c-media--1x1  { aspect-ratio: 1 / 1; }
+.c-media--3x4  { aspect-ratio: 3 / 4; }

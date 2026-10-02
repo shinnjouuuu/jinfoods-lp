@@ -1,0 +1,405 @@
+@use "sass:list";
+@use "../../foundation/variables" as *;
+
+$_map-max: 45rem;  // 45rem=720px（地図と詳細カードで共有）
+
+// =============================================================
+// p-facility（トップの受託施設一覧）
+// 2026-09-30 夕：右の一覧をやめ、地図だけにした（新庄さんの差し戻し「リストみたいなのをやめてタグに」）。
+// 2026-09-30 夜：施設名のタグを最初から出し、押すと地図の下に詳細を出す形に変えた
+//   （新庄さん「タグはホバーなしでデフォルトで、詳細を押すと詳しく」。比較の B 案
+//    https://claude.ai/artifact/K7CkSDz1iAHcLKaR7TmUzy 。押す前に合計の一文を出すのはやめた）。
+//   同夜、hallmark check で詳細カードを直した（左の朱の縦罫をやめて pale の地／md 以上は横1行で中身の幅／
+//   「補足」の行をやめて種別につなぐ／地図の figure の外へ出して出典を地図の直下に戻す／番号の丸を1行目の中央に）。
+//   地図は会社概要ページと同じ概略図（p-area-map・市町村の下地つき）。
+//   点は SVG の上に重ねたボタン（__pin）。中に番号の丸（__pin-num）と施設名のタグ（__tag）を持つ。
+//     ・押す … main.js の initFacilityMap が aria-expanded を付け替え、__detail の hidden を外す。
+//       見た目も [aria-expanded="true"] で当てる（状態を1つにする）
+//     ・同じタグをもう一度押す／Esc … 閉じる。開くのは1つだけ
+//   点をボタンにしたのは、SP でもタグの文字が縮まず（SVG の文字は地図ごと縮む）、押せる範囲を 44px 取れるため。
+//   位置は viewBox（-235 -125 470 345）に対する %（--x / --y）。座標の表は map-src/README.md
+//   タグの向きは点ごとにモディファイアで決める（自動で決めると重なる。WP は地区名の座標の表に向きも書く）
+// =============================================================
+.p-facility__map {
+  inline-size: 100%;
+  max-inline-size: $_map-max;  // 地図だけになったので、2列のときより広く取る
+  // hallmark-ignore S-19 地図を中央に置く auto（余白ではない）
+  margin-inline: auto;
+}
+
+// 点を重ねる土台。SVG と同じ大きさ。押している点の重なり順はこの中だけで閉じる
+.p-facility__stage {
+  position: relative;
+  isolation: isolate;
+}
+
+// ---- 点（押せる範囲 44px。見た目の丸は 28px） ----
+// button の枠・地・文字の打ち消しは _reset.scss の button で済んでいる
+.p-facility__pin {
+  position: absolute;
+  inset-block-start: var(--y);
+  inset-inline-start: var(--x);
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;  // 2.75rem=44px（押せる範囲の下限）
+  block-size: 2.75rem;
+  transform: translate(-50%, -50%);
+
+  &[aria-expanded="true"] {
+    z-index: var(--z-facility-pin-active);
+  }
+
+  // 輪はタグに出す（タグを隠している --tagless の SP だけ番号の丸に出す）
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.p-facility__pin-num {
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;  // 1.75rem=28px
+  block-size: 1.75rem;
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  font-family: var(--font-en);
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  font-weight: 700;
+  color: var(--color-accent-deep);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+
+  .p-facility__pin[aria-expanded="true"] & {
+    color: var(--color-white);
+    background-color: var(--color-accent);
+    transform: scale(1.15);
+  }
+
+  .p-facility__pin:focus-visible & {
+    outline: var(--_sp-ring, none);
+    outline-offset: var(--focus-offset);
+
+    @include mq-up("md") {
+      outline: none;
+    }
+  }
+}
+
+// ---- 施設名のタグ（最初から出ている） ----
+// 向きは、点のモディファイアが変数（SP は --_sp-*、md 以上は --_md-*）に書き、タグがそれを読む。
+// モディファイアごとに書く変数が違うので、書いた順番で勝ち負けが決まらない（c-btn の --_pad-text と同じ考え方）
+$_tag-gap: 1rem;  // 1rem=16px。点の中心からタグまで（丸の半径 14px ＋ 2px）
+$_tag-end: 1.25rem;  // 1.25rem=20px。上・下に置くとき、タグの右端を点の中心からこれだけ右にそろえる
+
+// 向き → （上下の位置、左右の位置、ずらし）
+@function _tag-place($dir) {
+  @if $dir == right {
+    @return (50% auto, calc(50% + #{$_tag-gap}) auto, 0 -50%);
+  } @else if $dir == left {
+    @return (50% auto, auto calc(50% + #{$_tag-gap}), 0 -50%);
+  } @else if $dir == above {
+    @return (auto calc(50% + #{$_tag-gap}), 50% auto, -50% 0);
+  } @else if $dir == above-end {
+    @return (auto calc(50% + #{$_tag-gap}), auto calc(50% - #{$_tag-end}), 0 0);
+  } @else if $dir == below-end {
+    @return (calc(50% + #{$_tag-gap}) auto, auto calc(50% - #{$_tag-end}), 0 0);
+  }
+
+  @error "p-facility__tag の向きが違います: #{$dir}（right / left / above / above-end / below-end）";
+}
+
+@mixin _tag-dir($bp, $dir) {
+  $v: _tag-place($dir);
+
+  --_#{$bp}-block: #{list.nth($v, 1)};
+  --_#{$bp}-inline: #{list.nth($v, 2)};
+  --_#{$bp}-shift: #{list.nth($v, 3)};
+}
+
+.p-facility__tag {
+  position: absolute;
+  inset-block: var(--_sp-block, 50% auto);
+  inset-inline: var(--_sp-inline, calc(50% + #{$_tag-gap}) auto);
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;  // 0.3125rem=5px
+  padding: 0.125rem 0.4375rem;  // 0.125rem=2px / 0.4375rem=7px
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-head);
+  font-size: 0.75rem;  // 0.75rem=12px
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-text);
+  white-space: nowrap;
+  opacity: var(--_sp-opacity, 1);
+  pointer-events: var(--_sp-events, auto);
+  translate: var(--_sp-shift, 0 -50%);
+  transition:
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+
+  // 押せる範囲を高さ 44px に広げる（見た目は SP 24px のまま）
+  &::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline: 0;
+    block-size: 2.75rem;  // 2.75rem=44px
+    translate: 0 -50%;
+  }
+
+  .p-facility__pin:focus-visible & {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+
+  .p-facility__pin[aria-expanded="true"] & {
+    color: var(--color-white);
+    background-color: var(--color-accent);
+  }
+
+  @include mq-up("md") {
+    inset-block: var(--_md-block, 50% auto);
+    inset-inline: var(--_md-inline, calc(50% + #{$_tag-gap}) auto);
+    gap: 0.375rem;  // 0.375rem=6px
+    padding: 0.1875rem 0.5rem;  // 0.1875rem=3px / 0.5rem=8px
+    font-size: 0.8125rem;  // 0.8125rem=13px
+    // md 以上は置き場があるので、SP で隠したタグ（--tagless）も出す
+    opacity: 1;
+    pointer-events: auto;
+    translate: var(--_md-shift, 0 -50%);
+  }
+}
+
+// マウスを乗せる／Tab で移ったとき（押している間は塗りのまま）
+@media (hover: hover) {
+  .p-facility__pin:hover:not([aria-expanded="true"]) {
+    .p-facility__tag {
+      border-color: var(--color-accent-deep);
+      color: var(--color-accent-deep);
+    }
+
+    .p-facility__pin-num {
+      transform: scale(1.15);
+    }
+  }
+}
+
+.p-facility__pin:focus-visible:not([aria-expanded="true"]) {
+  .p-facility__tag {
+    border-color: var(--color-accent-deep);
+    color: var(--color-accent-deep);
+  }
+
+  .p-facility__pin-num {
+    transform: scale(1.15);
+  }
+}
+
+// SP の向き（既定は右）
+.p-facility__pin--left {
+  @include _tag-dir(sp, left);
+}
+
+.p-facility__pin--above-end {
+  @include _tag-dir(sp, above-end);
+}
+
+.p-facility__pin--below-end {
+  @include _tag-dir(sp, below-end);
+}
+
+// SP で置き場の無い点（本社のすぐ横の明野など）は、タグを見えなくして番号だけにする。
+// opacity なので施設名はボタンの名前として読み上げに残り、押せば地図の下に詳細が出る。
+// 見えないタグも箱は残るので、地図の内側（左）に置いてページを横に広げない。フォーカスの輪は番号の丸に出す
+.p-facility__pin--tagless {
+  @include _tag-dir(sp, left);
+
+  --_sp-opacity: 0;
+  --_sp-events: none;
+  --_sp-ring: var(--focus-ring);
+}
+
+// md 以上の向き（既定は右）
+.p-facility__pin--md-left {
+  @include _tag-dir(md, left);
+}
+
+.p-facility__pin--md-above {
+  @include _tag-dir(md, above);
+}
+
+// 開閉の印（＋ → −）。SP は幅が足りないので出さない
+.p-facility__tag-mark {
+  display: none;
+  position: relative;
+  flex: none;
+  inline-size: 0.625rem;  // 0.625rem=10px
+  block-size: 0.625rem;
+  color: var(--color-accent);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline: 0;
+    block-size: 1.5px;
+    background-color: currentColor;
+    transform: translateY(-50%);
+  }
+
+  // 縦の棒。開いたら寝かせて − にする
+  &::after {
+    transform: translateY(-50%) rotate(90deg);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .p-facility__pin[aria-expanded="true"] & {
+    color: var(--color-white);
+
+    &::after {
+      transform: translateY(-50%) rotate(0deg);
+    }
+  }
+
+  @include mq-up("md") {
+    display: block;
+  }
+}
+
+// 「3施設」。複数施設の契約先は、タグには短い名前とこれだけを出す
+.p-facility__count {
+  display: inline-block;
+  padding-inline: 0.375rem;  // 0.375rem=6px
+  font-family: var(--font-base);
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  line-height: 1.6;
+  white-space: nowrap;
+  color: var(--color-accent-deep);
+  background-color: var(--color-accent-pale);
+
+  .p-facility__pin[aria-expanded="true"] & {
+    background-color: var(--color-white);
+  }
+}
+
+// ---- 地図の下の詳細（押したときだけ出る。押す前は何も出さない） ----
+// 地図の figure の外（__foot の先頭）に置く。出典は地図の直下のまま
+// SP：幅いっぱい・縦積み。md 以上：中身の幅で中央・横1行（長い名前だけ2行に落ちる）
+.p-facility__detail {
+  display: grid;
+  gap: 0.5rem;  // 0.5rem=8px
+  // SP は幅いっぱい（ただし地図より広くしない）。親の __foot が中央寄せなので、そのまま地図の真下に来る
+  inline-size: 100%;
+  max-inline-size: $_map-max;  // 地図と同じ
+  padding: 0.875rem 1rem;  // 0.875rem=14px / 1rem=16px
+  background-color: var(--color-accent-pale);
+  text-align: start;
+
+  // hidden 属性を display で打ち消さない
+  &[hidden] {
+    display: none;
+  }
+
+  // md 以上は中身の幅にして横1行
+  @include mq-up("md") {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.5rem;  // 0.25rem=4px / 1.5rem=24px（施設名と所在地の間）
+    inline-size: auto;
+  }
+}
+
+.p-facility__detail-name {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-head);
+  font-size: 1rem;  // 1rem=16px
+  font-weight: 700;
+  line-height: 1.5;
+  // 施設名は語の切れ目で折る（「特別養護老／人ホーム」と割れないように）。対応していないブラウザでは普通に折れる
+  word-break: auto-phrase;
+}
+
+// 丸の高さを施設名の1行の高さ（16px × 1.5 ＝ 24px）と同じにして、1行目の中央にそろえる
+.p-facility__detail-num {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 1.5rem;  // 1.5rem=24px
+  block-size: 1.5rem;
+  border-radius: 50%;
+  font-family: var(--font-en);
+  font-size: 0.75rem;  // 0.75rem=12px
+  line-height: 1;
+  color: var(--color-white);
+  background-color: var(--color-accent);
+}
+
+// 所在地・種別。SP は見出しの列をそろえた2行、md 以上は横に並べる
+.p-facility__detail-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.125rem 0.5rem;  // 0.125rem=2px（行の間）/ 0.5rem=8px（見出しと値の間）
+  font-size: 0.875rem;  // 0.875rem=14px
+
+  @include mq-up("md") {
+    display: flex;
+    gap: 1.25rem;  // 1.25rem=20px（所在地と種別の間）
+  }
+}
+
+// SP は行の箱を消して、見出しと値を dl の格子に直接並べる（見出しの列がそろう）
+.p-facility__detail-row {
+  display: contents;
+
+  @include mq-up("md") {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.p-facility__detail-term {
+  color: var(--color-text-note);
+}
+
+// ---- 地図の下：詳細・案内・点の無い施設・注記 ----
+.p-facility__foot {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.p-facility__hint {
+  font-size: 0.8125rem;  // 0.8125rem=13px
+  color: var(--color-text-sub);
+}
+
+// 位置を確認中の施設（地図に点が無い）。住所が届いたら点を足して、この行は消す
+.p-facility__others {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-note);
+}
+
+.p-facility__note {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--color-text-note);
+}

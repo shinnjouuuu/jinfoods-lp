@@ -1,0 +1,128 @@
+@use "../foundation/variables" as *;
+
+// =============================================================
+// l-drawer（SP のドロワー。nav 未満で出す）
+// 2026-09-30 夜に _header.scss から分けた（1ファイル1Block）
+// =============================================================
+// 2026-09-30 夜に組み替え（C案。比較 https://claude.ai/artifact/4nmtSnRHz8fEjAkTtuswiM）。
+// 上から 目次（事業の5つ・2列のタイル）→ 採用の帯 → 連絡（電話・お問い合わせ）。
+// 組み替え前は目次7つを1列に並べ、一番下の電話が SP 固定バーに最大75px隠れていた（固定バーは開いている間は下へ隠す：_spbar.scss）
+.l-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+  background-color: var(--color-white);
+  // 下は iPhone のホームバーの分も空ける
+  padding-block: calc(var(--header-height) + 1.25rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
+
+  @include mq-up("nav") {
+    display: none;
+  }
+}
+
+.l-drawer.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.l-drawer__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;  // 1.25rem=20px
+}
+
+// ---- 目次：2列のタイル ----
+.l-drawer__nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;  // 0.5rem=8px
+}
+
+// 5つ目（お知らせ）は2列ぶん。1つだけ段に残さない
+.l-drawer__nav-item:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+// マウスを乗せる（hover できる端末だけ）／Tab で選んだときは、_variables.scss の mixin hover
+
+.l-drawer__tile {
+  --_en-color: var(--color-accent);
+
+  display: grid;
+  align-content: center;
+  min-block-size: 4rem;  // 4rem=64px
+  padding: 0.5rem 0.75rem;  // 0.5rem=8px / 0.75rem=12px
+  background-color: var(--color-paper);
+  transition: background-color var(--dur) var(--ease);
+
+  // 地を淡面にすると、朱の英字は 4.47:1 で基準に届かない。濃い朱（6.14:1）にする
+  @include hover {
+    --_en-color: var(--color-accent-deep);
+
+    background-color: var(--color-sub);
+  }
+}
+
+// 英字の小見出し。トップの各節の英字ラベルと同じ語
+.l-drawer__tile-en {
+  font-family: var(--font-en);
+  font-size: 0.625rem;  // 0.625rem=10px
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_en-color);
+  transition: color var(--dur) var(--ease);
+}
+
+.l-drawer__tile-ja {
+  font-family: var(--font-head);
+  font-size: 0.9375rem;  // 0.9375rem=15px
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+// ---- 採用の帯（求職者向け。事業の目次と分ける） ----
+// 右端の矢印線は c-arrow-line--from-end（40px。矢じりを止め、右端を起点に左へ伸ばす＝帯の右の余白からはみ出さない）。
+// hover と Tab では --arrow-grow を書き換えるだけ（線の transform には触らない）
+.l-drawer__recruit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-block-size: 3.5rem;  // 3.5rem=56px
+  padding: 0.75rem 0.875rem;  // 0.75rem=12px / 0.875rem=14px
+  background-color: var(--color-accent-pale);
+
+  @include hover {
+    --arrow-grow: var(--line-grow);
+  }
+}
+
+.l-drawer__recruit-text {
+  display: grid;
+  font-family: var(--font-head);
+  font-size: 1rem;  // 1rem=16px
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.l-drawer__recruit-sub {
+  font-family: var(--font-base);
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  line-height: 1.5;
+  color: var(--color-accent-deep);
+}
+
+// ---- 連絡：電話とお問い合わせ ----
+// 2つ並ばない幅（368px 未満）では縦に積む。電話は c-btn--compact（番号 17px・左右 12px）。
+// お問い合わせページでは電話だけ（1つなら幅いっぱいなので --compact を付けない）
+.l-drawer__cta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.25rem, 1fr));  // 10.25rem=164px（電話の受付時間が1行に入る幅）
+  gap: 0.5rem;
+}

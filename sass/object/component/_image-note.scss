@@ -1,0 +1,23 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// c-image-note（生成画像の「イメージ」の札）
+// 2026-10-01 追加（新庄さん判断）：AI で生成した写真（人物・厨房・施設の場面）を、
+// 御社の実際の様子のように見せないため、写真の上に小さく「イメージ」と出す。
+// 撮影か実写の差し替えが済んだら、札ごと外す。
+// 親（写真の枠）が position を持つ前提。置き場所は --_note-inset で受け取る（既定は右下から 8px）。
+// 置く側が --_note-inset と z-index を書けば、書いた順番に関係なく効く（この部品はどちらも自分で宣言しない）
+// =============================================================
+.c-image-note {
+  position: absolute;
+  inset: var(--_note-inset, auto 0.5rem 0.5rem auto);  // 0.5rem=8px
+  padding: 0.125rem 0.5rem;  // 0.125rem=2px / 0.5rem=8px
+  font-size: 0.6875rem;  // 0.6875rem=11px
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--color-white);
+  // 72% の濃い地。真っ白な写真の上でも白文字 6.5:1
+  background-color: color-mix(in srgb, var(--color-dark) 72%, transparent);
+  pointer-events: none;
+}

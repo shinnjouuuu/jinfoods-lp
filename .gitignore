@@ -1,0 +1,12 @@
+# Git で追わない物。画像・出力した css/style.css・images-src/ は追う（本番と同じ中身をたどれるように）
+.vercel/
+node_modules/
+.DS_Store
+.env*
+
+# 一時ファイル
+*.log
+*.tmp
+*.swp
+*~
+.sass-cache/

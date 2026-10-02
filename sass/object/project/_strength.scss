@@ -1,0 +1,315 @@
+@use "../../foundation/variables" as *;
+
+// =============================================================
+// p-strength（トップの「JINfoodsの4つの強み」）
+// 2026-09-30 コンペ B案「介護食の5段階を主役に」。
+//   主役：介護食（写真・本文・5段階の図）→ 残り3つ（管理栄養士・行事食・地域）は小さく
+//
+// 以前は「紙芝居」（見出しを sticky で固定し、スクロールでカードを1枚ずつ送る）だった。
+// 節が 3.3 画面分（1440×900 で 2,984px）あり、カード1枚を読むのに 497px スクロールさせていた。
+// SP では進み具合（01〜04）が固定バーの裏に隠れていた。→ 普通のスクロールで読む形にした。
+//
+// 介護食を主役にした理由：4つのうち、トップのほかの節に出てこないのが食事形態の5段階だけだった
+// （管理栄養士は ABOUT の入口・数字で見る・会社概要の「体制」、行事食は食事ギャラリー・お知らせ、
+//   地域は受託施設の地図・ABOUT の入口と重なる）。重なる3つは小さくし、根拠のページへ文字リンクで送る。
+// 主役の本文と5段階の名前・説明は、事業内容ページ（service.html の p-texture）の文をそのまま使う
+// =============================================================
+
+// 5段階の図の一辺。tab 以上はつなぐ線の高さもここから出す。SP は横一列に5つ並べるので小さく
+$_glyph: 2.75rem;  // 2.75rem=44px
+$_glyph-sp: 2.25rem;  // 2.25rem=36px
+// 5段階が左から順に出るときの、1段ごとの遅れ
+$_step-stagger: 0.14s;
+// tab 以上で横一列にしたときの、上の余白と列の間（つなぐ線の位置もここから出す）
+$_steps-pad: 1.5rem;  // 1.5rem=24px
+$_steps-gap: 1rem;  // 1rem=16px
+
+// この節の地と線。節は HTML の l-section--sage に置く（DESIGN.md §2 の節の地の並び）。
+// 地を替えるときはここだけ直す（図のまわりの縁と区切り線がこれを読む）
+.p-strength {
+  --_ground: var(--color-sage);
+  --_line: var(--color-sage-line);  // --color-border はセージの上で見えない
+}
+
+// ---- 主役（介護食）----
+// SP は写真 → 本文 → 5段階の縦並び。tab 以上は写真と本文を左右に置き、5段階は下の段で横一列
+.p-strength__hero {
+  display: grid;
+  gap: fluid(20px, 32px);
+
+  @include mq-up("tab") {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    column-gap: fluid(28px, 48px);
+  }
+}
+
+.p-strength__hero-media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background-color: var(--color-sub);
+}
+
+.p-strength__hero-img,
+.p-strength__other-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.p-strength__hero-body {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 0.625rem;  // 0.625rem=10px
+}
+
+.p-strength__num,
+.p-strength__other-num {
+  font-family: var(--font-en);
+  font-size: fluid(30px, 40px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.p-strength__hero-title {
+  font-family: var(--font-head);
+  font-size: fluid(22px, 30px);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.p-strength__hero-text {
+  line-height: 1.9;
+  color: var(--color-text-sub);
+  // 「5／段階」のように語の途中で折り返さない（和文では text-wrap: pretty が効かない）
+  word-break: auto-phrase;
+}
+
+// ---- 5段階（常食 → 一口大 → 粗刻み → 極刻み → ミキサー）----
+// どの幅でも横一列。SP は図と名前だけ（説明はリンク先の事業内容ページにある）。
+// tab 以上は説明も出し、図の後ろを1本の線でつなぐ。
+// 2026-10-01：SP を縦5行（説明つき・416px）から横一列（103px）に。「特にスマホが長い」の差し戻し
+.p-strength__steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;  // 0.5rem=8px
+  padding-block: 1rem;
+  border-block: 1px solid var(--_line);
+
+  @include mq-up("tab") {
+    grid-column: 1 / -1;
+    gap: $_steps-gap;
+    padding-block: $_steps-pad 0;
+    border-block: 0;
+
+    // 図の中心の高さを通る線。最初と最後の図の中心どうしをつなぐ
+    // （列の幅は (100% − 列の間4つ) ÷ 5 なので、端の列の中心は端からその半分）
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block-start: calc(#{$_steps-pad} + #{$_glyph} / 2);
+      inset-inline: calc((100% - #{$_steps-gap} * 4) / 10);
+      block-size: 1px;
+      background-color: var(--_line);
+      transform-origin: left;
+    }
+  }
+}
+
+.p-strength__step {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 0.375rem;
+  text-align: center;
+
+  @include mq-up("tab") {
+    position: relative;
+  }
+}
+
+// 図：淡い朱の四角を朱の線で囲み、同じ線で刻む。--n（HTML の style で渡す）が1辺の切れ目の数。
+// 1＝塊のまま（常食）、2＝一口大、3＝粗刻み、5＝極刻み。ミキサーは --paste で刻み線のない丸。
+// 2026-10-01 に「朱のベタを白い線で刻む」から変更（朱のベタが5つ並ぶと面が硬いため。配色変更「朱×セージ」）
+.p-strength__glyph {
+  inline-size: $_glyph-sp;
+  aspect-ratio: 1;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent-pale);
+  background-image:
+    linear-gradient(to right, var(--color-accent) 2px, transparent 2px),
+    linear-gradient(to bottom, var(--color-accent) 2px, transparent 2px);
+  background-position: -1px 0, 0 -1px;
+  background-size: calc(100% / var(--n, 1)) 100%, 100% calc(100% / var(--n, 1));
+
+  @include mq-up("tab") {
+    inline-size: $_glyph;
+    // hallmark-ignore S-19 図と名前の間だけを広げる（段の中は gap 0.375rem で均等なので、1か所だけ足すには margin しかない）
+    margin-block-end: 0.375rem;  // 0.375rem=6px
+    // つなぐ線を図の周りで切る（節の地の色で 0.5rem 縁取る）
+    box-shadow: 0 0 0 0.5rem var(--_ground);
+  }
+}
+
+// なめらかなペースト。少しだけゆがんだ丸にして、機械的な円に見せない
+.p-strength__glyph--paste {
+  background-image: none;
+  border-radius: 46% 54% 50% 50% / 55% 45% 55% 45%;
+}
+
+.p-strength__step-name {
+  font-family: var(--font-head);
+  font-size: 0.875rem;  // 0.875rem=14px
+  font-weight: 700;
+  // SP の列は 320px 幅で約51px。「ミキサー」（約56px）が「ミキサ／ー」に割れないよう、列の間（8px）へ少しはみ出してよい
+  white-space: nowrap;
+
+  @include mq-up("tab") {
+    font-size: 1.0625rem;  // 1.0625rem=17px
+    white-space: normal;
+  }
+}
+
+// 説明は tab 以上だけ（SP は事業内容ページへのリンクに任せる）
+.p-strength__step-desc {
+  display: none;
+  font-size: 0.875rem;  // 0.875rem=14px
+  line-height: 1.7;
+  color: var(--color-text-sub);
+  // 横一列の狭い列で、2行目が「けます。」だけにならないよう行の長さをそろえる
+  text-wrap: balance;
+  word-break: auto-phrase;
+
+  @include mq-up("tab") {
+    display: block;
+  }
+}
+
+// 動き：見えたら左から順に出る（1回だけ）。is-armed / is-drawn は main.js の initStrengthSteps が付ける。
+// JS が無い／動きを減らす設定では is-armed が付かないので、最初から全部出ている
+.p-strength__steps.is-armed {
+  .p-strength__step {
+    opacity: 0;
+    transform: translateY(0.625rem);  // 0.625rem=10px（下から少しだけ上がって出る）
+  }
+
+  &::before {
+    transform: scaleX(0);
+  }
+}
+
+.p-strength__steps.is-armed.is-drawn {
+  .p-strength__step {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+    transition-delay: calc(var(--i, 0) * #{$_step-stagger});
+  }
+
+  // 線の transition はここだけに置く（is-armed を付けた瞬間に、線が縮む動きが走らないように）
+  &::before {
+    transform: none;
+    transition: transform calc(var(--dur-slow) * 1.4) var(--ease);
+  }
+}
+
+// ---- 残り3つ（管理栄養士・行事食・地域）----
+// SP は「番号・見出し・リンク」の右に写真を小さく置くだけで、本文は出さない
+// （3つとも根拠のページにリンクで送る。2026-10-01「特にスマホが長い」で 893px → 約440px）。
+// tab〜nav は本文も出して1列、nav 以上は3列
+.p-strength__others {
+  display: grid;
+
+  // SP は5段階の下の線がそのまま区切りになるので、上の線は tab 以上だけ（2本並ばないように）
+  @include mq-up("tab") {
+    border-block-start: 1px solid var(--_line);
+  }
+
+  @include mq-up("nav") {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    padding-block-start: 2rem;
+  }
+}
+
+.p-strength__other {
+  display: grid;
+  // 5rem=80px（写真）。320px 幅でリンク「拠点と受託エリアを見る」（約186px）が1行に収まる幅を左に残す
+  grid-template-columns: minmax(0, 1fr) 5rem;
+  grid-template-areas:
+    "num media"
+    "title media"
+    "more media";
+  align-content: start;
+  gap: 0.375rem 1rem;
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--_line);
+
+  @include mq-up("tab") {
+    grid-template-columns: minmax(0, 1fr) 6.5rem;  // 6.5rem=104px
+    // 写真の高さの余りは見出しの行が引き受ける（番号の直下に見出しを置くため）
+    grid-template-rows: auto 1fr auto auto;
+    grid-template-areas:
+      "num media"
+      "title media"
+      "text text"
+      "more more";
+    padding-block: 1.375rem;
+  }
+
+  @include mq-up("nav") {
+    grid-template-columns: minmax(0, 1fr) 5.5rem;  // 5.5rem=88px
+    padding-block: 0;
+    border-block-end: 0;
+  }
+}
+
+.p-strength__other-num {
+  grid-area: num;
+  font-size: fluid(26px, 32px);
+}
+
+.p-strength__other-media {
+  position: relative;  // 生成画像に「イメージ」の札（c-image-note）を置けるように
+  grid-area: media;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-sub);
+}
+
+.p-strength__other-title {
+  grid-area: title;
+  font-family: var(--font-head);
+  font-size: fluid(17px, 19px);
+  font-weight: 700;
+  line-height: 1.5;
+  // 改行は HTML の <wbr> の位置だけ（「管理栄養士による／献立設計」「地域に根ざした／きめ細かな対応」）。
+  // auto-phrase と balance では 320px で「管理栄養士に／よる献立設計」「地域に／根ざした…」と割れた
+  word-break: keep-all;
+}
+
+// 本文は tab 以上だけ（SP はリンク先に任せる）
+.p-strength__other-text {
+  display: none;
+  grid-area: text;
+  font-size: 0.9375rem;  // 0.9375rem=15px
+  line-height: 1.85;
+  color: var(--color-text-sub);
+
+  @include mq-up("tab") {
+    display: block;
+  }
+}
+
+.p-strength__other-more {
+  grid-area: more;
+  justify-self: start;
+}

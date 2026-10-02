@@ -1,0 +1,16 @@
+/*
+Theme Name: JIN foods
+Theme URI: https://jin-oita.com/
+Author: 株式会社グリング
+Description: 株式会社JINfoods（大分県・給食委託厨房業務）のオリジナルテーマ。クラシックテーマ。CSSは sass/ からコンパイルした assets/css/style.css を読み込む（このファイルはテーマ情報のためだけに存在する）。
+Version: 1.0.0
+Requires at least: 6.5
+Requires PHP: 8.1
+License: 私有（クライアント専用）
+Text Domain: jinfoods
+*/
+
+/*
+  スタイルは assets/css/style.css にある。
+  このファイルに追記しないこと（テーマ情報ヘッダー専用）。
+*/

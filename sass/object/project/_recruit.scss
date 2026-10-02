@@ -1,0 +1,97 @@
+@use "../../foundation/variables" as *;
+
+// Hallmark · pre-emit critique: P4 H5 E4 S4 R5 V4（2026-10-01 採用 A案）
+//   H5：時間帯だけを大きく朱にして4つを同じ強さにしない／R5：箱・アイコン・行ごとの動きを足さない
+//   checks-ja：S-06・S-34（同じ形・同じ角丸の繰り返し）をカードをやめて回避、S-37（一律のフェードイン）なし
+
+// =============================================================
+// p-recruit（採用・副導線）
+// 労働条件（給与・就業時間の詳細）はここに書かない。
+// 募集時明示事項（受動喫煙防止措置など）が既存の採用ページで不足しており、
+// 社労士確認が済むまで新しい面に転記すると リスク を増やすだけなので、
+// このLPは「募集職種と働き方の概要 → 詳細は採用情報へ」に留める
+// =============================================================
+.p-recruit__inner {
+  display: grid;
+  gap: fluid(20px, 40px);
+
+  // 2列は tab から（2026-10-01）。md からだと 768px で写真が全幅（541px）になり、節が 1,091px あった
+  @include mq-up("tab") {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    align-items: center;
+  }
+}
+
+.p-recruit__body {
+  display: flex;
+  flex-direction: column;
+  gap: fluid(14px, 20px);
+  align-items: flex-start;
+}
+
+// ---- 働き方の条件（2026-10-01 コンペ A案「条件を見出しに」）----
+// トップの採用の節と採用ページの頭で使う。今の箇条書きを「大きく出す前半／小さく添える後半」に分けただけで、文言は同じ。
+// 箱（カード）にせず、罫線で区切った行に並べる（同じ角丸・同じ余白の面を4つ並べる形は AI の定型なのでやめた。DESIGN.md）。
+// 先頭の時間帯（cond-big--lead）だけ大きく朱で出し、4つを同じ強さにしない
+.p-recruit__conds {
+  inline-size: 100%;
+  border-block-start: 1px solid var(--color-border);
+}
+
+// 採用ページでは見出し（c-prose__h2）の朱の下線のすぐ下に来るので、上の灰色の線を外す（線が2本並ぶため）
+.p-recruit__conds--page {
+  border-block-start: 0;
+}
+
+.p-recruit__cond {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.125rem 0.625rem;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.p-recruit__cond-big {
+  font-family: var(--font-head);
+  font-size: fluid(17px, 20px);
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.p-recruit__cond-small {
+  font-size: 0.875rem;  // 0.875rem=14px
+  line-height: 1.6;
+  color: var(--color-text-sub);
+}
+
+// 時間帯だけ大きく。求職者がまず知りたいのは「いつ働けるか」なので、ここを節の見出しより目立たせる
+.p-recruit__cond-big--lead {
+  font-size: fluid(28px, 40px);
+  line-height: 1.2;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+// 採用ページの応募ボタン（c-btn--primary に Mix）。電話（c-btn--tel、3.25rem）と高さをそろえる。
+// スマホで2段に折れると 52px と 48px でずれていた（横に並ぶ幅では flex が同じ高さにする）
+.p-recruit__apply {
+  min-block-size: var(--btn-tall);
+}
+
+// ---- 募集要項の未記載項目 ----
+// 募集時の明示が必要なのに現行サイトに記載が無い項目を、目に見える形で空欄にする。
+// 値を勝手に作らない。公開前に埋めてもらうためのハイライト
+.p-recruit__todo-row {
+  // 文字が左の線に貼りついていたので、行の中に余白を足す（2026-10-01）
+  padding-inline: 0.875rem 0.75rem;  // 0.875rem=14px／0.75rem=12px
+  background-color: var(--color-warn-bg);
+  box-shadow: inset 3px 0 0 var(--color-warn);
+}
+
+.p-recruit__todo {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--color-warn);
+}

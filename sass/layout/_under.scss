@@ -1,0 +1,174 @@
+@use "../foundation/variables" as *;
+
+// =============================================================
+// 下層ページの共通レイアウト
+//
+// 現行サイトからの方針転換：
+// ① 右サイドバー（新着＋ギャラリー300px）を全ページから外す。
+//    どのページに行っても同じものが付いてくると、ページごとの目的が薄まる。
+//    お問い合わせページでフォームの隣に新着が並ぶのが典型。
+//    代わりに各ページの末尾へ「そのページに関係するCTA」だけを置く。
+// ② ページ見出しは画像に文字を焼かず HTML で組む。
+//    現行は 800x400 と 1439x719 の文字入り画像で alt も空だった。
+// ③ h1 はページに1つだけ。ロゴは下層では h1 にしない
+// =============================================================
+
+// ---- ページ見出し ----
+.l-pagehead {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  // 下端は、次の本文（l-under）の波が --wave-height だけ重なってくる（2026-10-01）。
+  // 高さと下の余白に同じだけ足して、写真の見える高さと文字の位置を変えない
+  min-block-size: calc(#{fluid(180px, 300px)} + var(--wave-height));
+  padding-block: calc(var(--header-height) + #{fluid(20px, 32px)}) calc(#{fluid(20px, 34px)} + var(--wave-height));
+  overflow: hidden;
+  background-color: var(--color-ink);
+  isolation: isolate;
+}
+
+.l-pagehead__bg {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-pagehead-bg);
+}
+
+.l-pagehead__bg-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+// 文字を乗せるための暗幕。写真の明るい部分で白文字が飛ぶのを防ぐ。
+// 2026-10-02：上の方（パンくず・英字ラベルが乗る所）を .32→.50、中段を .58→.62 に濃くした。
+// 前は 12〜13px の小さい文字が写真の明るい所で 2.8〜3.5:1 しかなかった（WCAG 1.4.3。DESIGN.md §7 の要修正）。
+// 7ページ×375／1440 の実ピクセルで、パンくず・英字ラベルとも文字の下の5パーセンタイルが 4.5:1 以上
+.l-pagehead__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-pagehead-scrim);
+  pointer-events: none;
+  // 色は --color-scrim（2026-10-02 にトークンにした。値は前の rgb(20 16 15) と同じ）
+  background: linear-gradient(to top,
+    color-mix(in srgb, var(--color-scrim) 82%, transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) 62%, transparent) 46%,
+    color-mix(in srgb, var(--color-scrim) 50%, transparent) 100%);
+}
+
+// 背景が生成画像のときの「イメージ」の札（c-image-note と併記）。
+// 右下だとスマホで説明文に重なるので、ヘッダーのすぐ下の右上に置く。暗幕に沈まないよう文字の層に上げる
+.l-pagehead__note {
+  --_note-inset: calc(var(--header-height) + 0.5rem) 0.5rem auto auto;  // 0.5rem=8px
+
+  z-index: var(--z-pagehead-copy);
+}
+
+.l-pagehead__inner {
+  position: relative;
+  z-index: var(--z-pagehead-copy);
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: fluid(6px, 10px);
+  color: var(--color-white);
+}
+
+.l-pagehead__en {
+  font-family: var(--font-en);
+  font-size: fluid(11px, 13px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  // 前は直書きの #ffc9a3（トークン外・最低 2.8:1）→ 10-02 朝に --color-accent-pale → 同日、新庄さん「英字ラベルも白にそろえて」で白。
+  // 写真の上の大きな見出しだけ（明るい地の記事ページの薄い見出しは朱のまま。下の --compact）
+  color: var(--color-white);
+}
+
+.l-pagehead__title {
+  font-family: var(--font-head);
+  font-size: fluid(25px, 42px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  text-shadow: 0 2px 16px rgb(15 12 11 / 0.5);
+}
+
+.l-pagehead__lead {
+  font-size: fluid(13px, 15px);
+  line-height: 1.8;
+  color: var(--color-on-photo-sub);
+  // 読み幅の上限。em なので文字サイズに追従する。
+  // 日本語は1文字≒1em なので 40em ≒ 40文字／行。長すぎると次の行を見失う
+  max-inline-size: 40em;
+}
+
+// お知らせの記事ページだけの薄い見出し（2026-10-01、コンペ A）。
+// 写真・暗幕・大きな題を持たず、パンくずと英字ラベルだけ。記事の題がページの h1 になる。
+// 大きな見出しのままだと題が PC で 447px から始まり、写真つきの記事は最初の画面に本文が入らなかった
+.l-pagehead--compact {
+  align-items: center;
+  min-block-size: 0;
+  // 下に本文の波が重なるぶん足す。下端の線は 2026-10-01 にやめた（波が境目になるため）
+  padding-block: calc(var(--header-height) + #{fluid(12px, 20px)}) calc(#{fluid(12px, 20px)} + var(--wave-height));
+  background-color: var(--color-paper);
+
+  .l-pagehead__inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 1.5rem;
+    color: var(--color-ink);
+  }
+
+  // 生成り地で 4.97:1（2026-10-01 の配色変更後）
+  .l-pagehead__en {
+    color: var(--color-accent);
+  }
+}
+
+// ---- 本文の器 ----
+// 1カラム。読み幅は l-under__body 側で絞る
+$_under-pad-start: fluid(32px, 64px);
+
+.l-under {
+  padding-block: $_under-pad-start fluid(48px, 88px);
+}
+
+// 見出しの下端を波で切る（2026-10-01。新庄さん「下層の見出し写真の下端も波に」）。
+// 本文の上端を見出しに重ね、mask で抜く（l-section--wave と同じ作り。抜けた所に見出しの写真が見える）。
+// 白を明示する（透明だと重ねた帯から見出しが全部透けて波が出ない）。
+// 見出しのすぐ後ろの本文だけに付ける（見出しの無いページで、本文がヘッダーの下へ潜らないように）。
+// 形は2。下層は 見出し→本文（2）→締め（1）→フッター（2）で交互になる
+.l-pagehead + .l-under {
+  background-color: var(--color-white);
+  @include wave-top(2, $_under-pad-start);
+}
+
+.l-under__body {
+  display: flex;
+  flex-direction: column;
+  gap: fluid(36px, 64px);
+}
+
+// 見出し＋本文のかたまり
+.l-under__block {
+  display: flex;
+  flex-direction: column;
+  gap: fluid(14px, 22px);
+  // リンクで飛んできたとき（例：トップの強み → service.html#texture）、見出しがヘッダーに貼りつかないように 1rem あける。
+  // ヘッダーの高さぶんは html の scroll-padding-top が持っているので、ここは 1rem だけ
+  scroll-margin-block-start: 1rem;
+}
+
+// 読み物の幅。65文字相当で止める
+.l-under__prose {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15em;
+  max-inline-size: 42em; // 本文の読み幅。42文字／行が上限
+  font-size: fluid(14px, 16px);
+  line-height: 2;
+  color: var(--color-text-sub);
+}

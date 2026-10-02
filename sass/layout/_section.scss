@@ -1,0 +1,44 @@
+@use "../foundation/variables" as *;
+
+// =============================================================
+// セクションの縦リズム
+// 余白は margin で積み上げず、セクション自身の padding で持つ
+// =============================================================
+.l-section {
+  padding-block: var(--section-pad-block);
+  // 地の既定は白。波の節は前の節に重なるので、透明だと重ねた帯から前の節の地が全部透けて波が出ない。
+  // 地のモディファイア（--paper / --sage）は同じ強さで後ろに書くので、そちらが勝つ
+  background-color: var(--color-white);
+}
+
+.l-section--paper {
+  background-color: var(--color-paper);
+}
+
+.l-section--sub {
+  background-color: var(--color-sub);
+}
+
+// 2つ目の地（2026-10-01）。トップの強みと、締めの案内。小さい朱文字はこの上では accent-deep にする
+.l-section--sage {
+  background-color: var(--color-sage);
+}
+
+// 節の上端を波で切る（2026-10-01）。前の節と地が違う節に付ける。
+// 波の形は、波の節だけを数えて奇数番目と偶数番目で入れ替える（同じ形が続くと型押しに見える）。
+// 要素の種類（nth-of-type）で数えると、WP のブロックが section を1つ足すだけで偶奇がずれるので、クラスで数える。
+// 最後の波の節が奇数番目になる並び（トップ・下層とも）なら、いつも形2のフッターと交互になる
+.l-section--wave {
+  @include wave-top(1);
+
+  &:nth-child(even of .l-section--wave) {
+    @include wave-mask(2);
+  }
+}
+
+// セクション内の塊は gap で並べる（margin 禁止）
+.l-section__body {
+  display: flex;
+  flex-direction: column;
+  gap: fluid(28px, 44px);
+}

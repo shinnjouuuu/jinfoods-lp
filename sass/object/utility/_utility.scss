@@ -16,20 +16,6 @@
   border: 0;
 }
 
-.u-nav-only {
-  display: none;
-
-  @include mq-up("nav") {
-    display: block;
-  }
-}
-
-.u-sp-only {
-  @include mq-up("nav") {
-    display: none;
-  }
-}
-
 // 幅いっぱい。c- は width を持たないため、幅の指定はこの層で行う
 .u-full {
   inline-size: 100%;

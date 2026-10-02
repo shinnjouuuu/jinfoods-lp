@@ -60,8 +60,7 @@ $_frame-pad: fluid(14px, 18px);
 }
 
 .p-form__input,
-.p-form__textarea,
-.p-form__select {
+.p-form__textarea {
   // WP 版（CF7）は入力欄を span で包むので、文字の行に入って下に 9〜10px の隙間ができる。block で消す
   display: block;
   inline-size: 100%;
@@ -84,8 +83,7 @@ $_frame-pad: fluid(14px, 18px);
 }
 
 .p-form__input:focus,
-.p-form__textarea:focus,
-.p-form__select:focus {
+.p-form__textarea:focus {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-pale);
   outline: none;
@@ -279,16 +277,14 @@ $_frame-pad: fluid(14px, 18px);
 
 // 入力の誤り（CF7 が aria-invalid="true" を付ける）
 .p-form__input[aria-invalid="true"],
-.p-form__textarea[aria-invalid="true"],
-.p-form__select[aria-invalid="true"] {
+.p-form__textarea[aria-invalid="true"] {
   border-color: var(--color-error);
 }
 
 // 誤りの欄にフォーカスしたとき。枠は誤りの色のまま変わらないので、サイト共通のフォーカスの輪を出す
 // （輪が無いと、誤りを直しに戻った欄のどこにいるか分からない）
 .p-form__input[aria-invalid="true"]:focus,
-.p-form__textarea[aria-invalid="true"]:focus,
-.p-form__select[aria-invalid="true"]:focus {
+.p-form__textarea[aria-invalid="true"]:focus {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
 }

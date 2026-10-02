@@ -447,7 +447,7 @@ UI・スタイルを作る／直すときは、このファイルを先に読み
 ## 6. Depth & Elevation
 
 - カード `--shadow-card: 0 2px 10px rgb(31 27 25 / 0.06)`、SP固定バー `--shadow-bar`
-- 重なり順は `--z-*` に集約（ヘッダー 9100 ＞ ドロワー 9000、SP固定バー 9500（ドロワーを開いている間は下へ隠す）、受託施設の押している点 `--z-facility-pin-active` 1（地図の土台で閉じる）、下層のページ見出し `--z-pagehead-*` 1〜3、FV は写真の層 `--z-fv-photo` 0 ＜ 縦組み `--z-fv-copy` 1。FV は `isolation: isolate` で FV の中だけで閉じる）
+- 重なり順は `--z-*` に集約（ヘッダー 9100 ＞ ドロワー 9000、SP固定バー 9500（ドロワーを開いている間は下へ隠す）、「本文へスキップ」`--z-skip` 9600（Tab で選んだときだけ左上に出る `c-skip-link`。2026-10-02）、受託施設の押している点 `--z-facility-pin-active` 1（地図の土台で閉じる）、下層のページ見出し `--z-pagehead-*` 1〜3、FV は写真の層 `--z-fv-photo` 0 ＜ 縦組み `--z-fv-copy` 1。FV は `isolation: isolate` で FV の中だけで閉じる）
 
 ## 7. Do's and Don'ts
 

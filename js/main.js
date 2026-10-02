@@ -439,12 +439,21 @@
     const hint = document.querySelector('.js-facility-hint');
     if (hint) hint.hidden = false;
 
+    // 読み上げる文：番号（aria-hidden）は外し、「所在地：大分市判田」の形にする
+    const speechOf = (detail) => {
+      const copy = detail.cloneNode(true);
+      copy.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
+      copy.querySelectorAll('dt').forEach((dt) => dt.append('：'));
+      copy.querySelectorAll('dd').forEach((dd) => dd.append('。'));
+      return copy.textContent.replace(/\s+/g, ' ').trim();
+    };
+
     const setOpen = (pin, open) => {
       pin.setAttribute('aria-expanded', String(open));
       const detail = detailOf(pin);
       if (detail) detail.hidden = !open;
       // 同じ施設を開き直したときも読まれるよう、閉じたら空にして、開くときは次の描画で書く
-      if (status && open && detail) requestAnimationFrame(() => { status.textContent = detail.textContent.replace(/\s+/g, ' ').trim(); });
+      if (status && open && detail) requestAnimationFrame(() => { status.textContent = speechOf(detail); });
     };
 
     const closeAll = () => {

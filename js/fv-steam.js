@@ -71,6 +71,9 @@
   const DEEPEST_Z = -9;      // 表のいちばん奥の写真。スクロールで上がる速さの基準
   const RISE_FROM = -1.4;    // 立ちのぼりの始まり（写真1枚ぶん強、下から）
   const HOVER = 1.2;         // マウスを乗せた写真の拡大率（_fv.scss の $_steam-hover と対）
+  // マウスを乗せた写真を運ぶ奥行き。霧がかかり始める位置（CAM_Z − FOG_NEAR ＝ 1）と表のいちばん手前（1）より前なので、
+  // 霧が晴れて元の写真の色になり、どの写真よりも手前に来る
+  const FRONT_Z = CAM_Z - FOG_NEAR + 0.5;
 
   // 3D の写真の角丸
   const makeAlpha = THREE => {
@@ -128,15 +131,19 @@
       const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
       mesh.visible = false;
       scene.add(mesh);
-      return { img, tex, mat, mesh, base: null, size: 1, hv: 1, loaded: false, dy: RISE_FROM, op: 0 };
+      return { img, tex, mat, mesh, base: null, size: 1, hv: 1, fz: 0, loaded: false, dy: RISE_FROM, op: 0 };
     });
 
     // 1枚の位置：CSS の位置＋立ちのぼり（dy）＋スクロール。奥の写真ほどゆっくり上がる
+    // fz（0〜1）で FRONT_Z へ運ぶ。手前に寄せると遠近で大きく・中心から離れて見えるので、
+    // k を掛けて画面上の位置と大きさを元のままにする（大きさは hv だけで変わる）
     const apply = it => {
       if (!it.base) return;
       const lift = state.scroll * (1.2 + (it.base.z - DEEPEST_Z) * 0.25);
-      it.mesh.position.set(it.base.x, it.base.y + it.dy + lift, it.base.z);
-      it.mesh.scale.set(it.size * it.hv, it.size * it.hv, 1);
+      const z = it.base.z + (FRONT_Z - it.base.z) * it.fz;
+      const k = (CAM_Z - z) / (CAM_Z - it.base.z);
+      it.mesh.position.set(it.base.x * k, (it.base.y + it.dy + lift) * k, z);
+      it.mesh.scale.set(it.size * it.hv * k, it.size * it.hv * k, 1);
       it.mat.opacity = it.op * (1 - state.scroll * 0.8);
     };
 
@@ -246,11 +253,11 @@
         hot = next;
         if (prev) {
           prev.mesh.renderOrder = 0;
-          gsap.to(prev, { hv: 1, duration: 0.35, ease: 'power2.out', overwrite: 'auto', onUpdate: () => { apply(prev); mark(); } });
+          gsap.to(prev, { hv: 1, fz: 0, duration: 0.35, ease: 'power2.out', overwrite: 'auto', onUpdate: () => { apply(prev); mark(); } });
         }
         if (next) {
           next.mesh.renderOrder = 1;  // 拡大した写真を隣の写真より手前に描く
-          gsap.to(next, { hv: HOVER, duration: 0.35, ease: 'power2.out', overwrite: 'auto', onUpdate: () => { apply(next); mark(); } });
+          gsap.to(next, { hv: HOVER, fz: 1, duration: 0.35, ease: 'power2.out', overwrite: 'auto', onUpdate: () => { apply(next); mark(); } });
         }
       };
       const pick = e => {

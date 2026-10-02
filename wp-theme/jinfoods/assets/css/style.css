@@ -3785,28 +3785,17 @@ html:has(:modal) {
   position: relative;
   display: block;
   color: var(--color-ink);
-  overflow: hidden;
 }
 .p-gallery__link:focus-visible {
   border-radius: var(--radius-md);
 }
 @media (hover: hover) {
-  .p-gallery__link:hover .p-gallery__img {
-    transform: scale(1.12);
-    filter: brightness(1);
-    z-index: 2;
-  }
   .p-gallery__link:hover .p-gallery__veil {
     opacity: 1;
   }
   .p-gallery__link:hover .p-gallery__go-icon {
     transform: translate(0.125rem, -0.125rem);
   }
-}
-.p-gallery__link:focus-visible .p-gallery__img {
-  transform: scale(1.12);
-  filter: brightness(1);
-  z-index: 2;
 }
 .p-gallery__link:focus-visible .p-gallery__veil {
   opacity: 1;
@@ -3819,8 +3808,6 @@ html:has(:modal) {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
-  filter: brightness(0.75);
-  transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease), z-index 0s var(--ease);
 }
 
 .p-gallery__veil {

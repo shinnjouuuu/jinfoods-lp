@@ -38,6 +38,7 @@
   position: relative;
   display: block;
   color: var(--color-ink);
+  overflow: hidden;  // ホバー時に写真がはみ出さないように
 
   // 全体共通のフォーカスの輪は角 2px なので、写真の角（--radius-md）にそろえる
   &:focus-visible {
@@ -45,6 +46,12 @@
   }
 
   @include hover {
+    .p-gallery__img {
+      transform: scale(1.12);
+      filter: brightness(1);
+      z-index: 2;
+    }
+
     .p-gallery__veil {
       opacity: 1;
     }
@@ -59,6 +66,8 @@
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
+  filter: brightness(0.75);
+  transition: transform var(--dur) var(--ease), filter var(--dur) var(--ease), z-index 0s var(--ease);
 }
 
 // 説明の入れ物。土台（タッチの端末）は写真の下に置く

@@ -19,7 +19,7 @@ get_template_part( 'template-parts/pagehead' );
     <?php // Block（p-arcgal）を Mix する（一覧の Element の親）。見出しの無い区画なので section ではなく div（2026-10-02、hallmark check P3。静的版と同じ） ?>
     <div class="l-under__block p-arcgal">
       <div class="l-under__prose">
-        <p class="u-phrase-wrap">行事食は毎月ご用意しています。刻み食・ムース食など、食事形態を変えても彩りと形を残すよう心がけています。</p>
+        <p class="u-phrase-wrap">行事食は毎月ご用意しています。刻み食・ムース食など、食事形態を変えても彩りと形を残すよう<span class="u-nowrap">心がけています</span>。</p>
       </div>
 
       <?php if ( ! have_posts() ) : ?>

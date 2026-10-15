@@ -298,3 +298,259 @@ $_steam-failsafe: 6s;
     visibility: visible;
   }
 }
+
+// =============================================================
+// B「紙焼き」（2026-10-05 新庄さん。URL に ?fv=b があるときだけ。無しは上の A「湯気の層」のまま）
+//
+// マーケのコンペで決まった「N3 紙焼き・増やした版」。実写を白い縁の紙焼きにして、縦組みとボタンのまわりに置く。
+//   モック：marketing/jinfoods/fv-b/mock/fv2.html#n3b（置き場所の表はモックの値をそのまま移した）
+//   比較：https://claude.ai/artifact/FjaCvvhPNdgNvb2WdY1VuD
+// 文字とボタンは A と同じ部品・同じ位置。A の写真の層（p-fv__steam）の代わりに、紙焼きの層（p-fv__prints）を出す。
+//   md〜  ：紙焼きの層を FV のヘッダーより下に重ねて（A の写真の層と同じ作り）、4枚を表の位置に置く
+//   md 未満：縦組みの左の列（グリッドの1列目）に3枚。列の高さ＝縦組みの高さなので、紙の幅を cqh で決める
+// 切り替えは index.html の FV の中の小さな script が is-fv-b を付ける。配る動きはこのファイルの keyframes（下の is-prints-dealt）、
+// マウスで傾ける動きは js/fv-prints.js（GSAP。hover できる端末だけ）
+// =============================================================
+
+// md〜で、右の3枚を置く基準。縦組みとボタンの組の中心から、この距離より外に置く（縦組みの列に重ねないため）
+$_print-side: clamp(232px, 21vw, 300px);
+
+// A のときは出さない
+.p-fv__prints {
+  display: none;
+}
+
+.p-fv.is-fv-b .p-fv__steam {
+  display: none;
+}
+
+// 縦組みとボタンの塊。紙焼きの層を inner の中に置き、md〜はその層を FV（.p-fv）に合わせて置くので、inner は位置を持たない。
+// そのぶん縦組みとボタンが自分で層の上に出る
+.p-fv.is-fv-b .p-fv__inner {
+  position: static;
+
+  // md 未満：右に縦組み、左に紙焼きの列、下にボタン（2列のグリッド）。
+  // 行の間は A と同じ（FV の高さを A と同じにするため）。列の間はモックの値
+  @include mq-down("md") {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: fluid(24px, 48px) 1.25rem;  // 1.25rem=20px
+    max-inline-size: 32rem;  // 32rem=512px。600〜768px で紙焼きの列が広がりすぎないように
+  }
+}
+
+.p-fv.is-fv-b .p-fv__type,
+.p-fv.is-fv-b .p-fv__cta {
+  position: relative;
+  z-index: var(--z-fv-copy);
+}
+
+@include mq-down("md") {
+  .p-fv.is-fv-b .p-fv__type {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .p-fv.is-fv-b .p-fv__cta {
+    grid-column: 1 / -1;
+  }
+}
+
+// 紙焼きの層。md 未満はグリッドの1列目、md〜は FV のヘッダーより下いっぱい（A の写真の層と同じ範囲）
+.p-fv.is-fv-b .p-fv__prints {
+  display: block;
+  position: relative;
+  z-index: var(--z-fv-photo);
+  pointer-events: none;
+
+  @include mq-down("md") {
+    grid-column: 1;
+    grid-row: 1;
+    // 行の高さ（＝縦組みの高さ）いっぱいに伸ばす。inner は A の縦1列の中央寄せ（align-items: center）を引き継ぐので、
+    // 書かないと中身の高さ＝0（下の container-type: size）のままで、紙焼きが縁だけの小さな四角に潰れた（2026-10-06 マーケの検収）
+    align-self: stretch;
+    // 列の大きさを入れ物にして、紙の幅を列の高さ（cqh）で決める。
+    // size にすると中身は列の高さに効かないので、列の高さは縦組みで決まる
+    container-type: size;
+  }
+
+  @include mq-up("md") {
+    position: absolute;
+    inset-block: var(--header-height) var(--wave-height);
+    // 1600px より広い画面では、層の幅を 1600px に止めて中央に寄せる（紙が画面の端へ離れていかないように）
+    inset-inline: max(0px, (100% - 1600px) / 2);
+    perspective: 1400px;  // マウスで傾けたときの奥行き
+  }
+}
+
+// 紙焼き1枚。位置・幅・傾きは下の表の変数から。中心を --print-x に合わせる
+.p-fv__print {
+  position: absolute;
+  inset-inline-start: var(--print-x);
+  inline-size: var(--print-w);
+  // 中心を --print-x に合わせる（紙の幅の半分だけ左へ）。translate: -50% は使わない：
+  // js/fv-prints.js の GSAP が transform に取り込んで px に直すことがあり、手元の1枚が 10px ずれた（2026-10-06）
+  // hallmark-ignore S-19 絶対配置の紙を --print-x の位置に中心で合わせるための寄せ。間隔ではない（間隔を取る親の gap が無い）
+  margin-inline-start: calc(var(--print-w) / -2);
+  padding: fluid(6px, 12px);
+  padding-block-end: fluid(18px, 36px);  // 紙焼きの下だけ広い白い縁
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-print);
+  transform: rotate(var(--print-r));
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+
+// 写真の窓。縦横比は表の --print-ar
+.p-fv__print-ph {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--print-ar);
+  background-color: var(--color-sub);
+}
+
+.p-fv__print-img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--print-pos, 50% 50%);
+}
+
+// ---- 置き場所の表（--print-x：中心の左右、上端・下端、--print-w：紙の幅、--print-r：傾き、--print-pos：写真の寄せ）。z-index は重なりの順 ----
+// 配る動きの値：--print-i が配る順番（0.14秒ずつ遅らせる）、--print-from が配り始めの傾き（左右交互）
+// md 未満：縦組みの左の列に、縦長の人を大きく。その下に揚げ物と手元を小さく重ねる。定食は出さない
+.p-fv__print--person {
+  --print-i: 0;
+  --print-from: -10deg;
+  --print-x: 50%;
+  --print-w: min(92%, 50cqh);
+  --print-r: -2deg;
+  --print-ar: 600 / 1130;
+  --print-pos: 50% 12%;
+  inset-block-start: 0;
+  z-index: 2;
+
+  // md〜：左に人（大）。写真は横長の切り抜き（fvb-person-wide.jpg）に替わる
+  @include mq-up("md") {
+    --print-x: 17%;
+    --print-w: clamp(240px, 28vw, 430px);
+    --print-r: -2.5deg;
+    --print-ar: 1108 / 1180;
+    --print-pos: 50% 30%;
+    inset-block-start: 5%;
+  }
+}
+
+.p-fv__print--hands {
+  --print-i: 1;
+  --print-from: 12deg;
+  --print-x: 76%;
+  --print-w: min(44%, 23cqh);
+  --print-r: 4deg;
+  --print-ar: 500 / 680;
+  inset-block-end: -1%;
+  z-index: 4;
+
+  @include mq-up("md") {
+    --print-x: calc(50% + #{$_print-side} + var(--print-w) / 2);
+    --print-w: clamp(130px, 15vw, 220px);
+    --print-r: 3.5deg;
+    inset-block: 3% auto;
+    z-index: 3;
+  }
+}
+
+.p-fv__print--fry {
+  --print-i: 2;
+  --print-from: -10deg;
+  --print-x: 30%;
+  --print-w: min(52%, 27cqh);
+  --print-r: -4deg;
+  --print-ar: 4 / 3;
+  inset-block-end: -3%;
+  z-index: 3;
+
+  @include mq-up("md") {
+    --print-x: 90%;
+    --print-w: clamp(170px, 20vw, 300px);
+    --print-r: 2.5deg;
+    inset-block: 31% auto;
+    z-index: 2;
+  }
+}
+
+.p-fv__print--meal {
+  display: none;
+  --print-i: 3;
+  --print-from: 12deg;
+  --print-ar: 4 / 3;
+
+  @include mq-up("md") {
+    display: block;
+    --print-x: calc(50% + #{$_print-side} + 24px + var(--print-w) / 2);
+    --print-w: clamp(190px, 22vw, 320px);
+    --print-r: -1.5deg;
+    inset-block-start: 57%;
+    z-index: 3;
+  }
+}
+
+// 320px 台はボタンが2段になり、縦組みの左の列が窮屈なので、人の1枚だけにする（モックの決まり）
+@media (max-width: 359px) {
+  .p-fv__print--fry,
+  .p-fv__print--hands {
+    display: none;
+  }
+}
+
+// 400〜768px は左の列が広く空白が多いので、人を列の幅いっぱいに近づけ、下の2枚も大きくする
+// （2026-10-06 マーケの値。空白 414px 42→37%・600px 53→50%・768px 62→59%。375px 以下は上の表のまま）
+@media (min-width: 400px) {
+  @include mq-down("md") {
+    .p-fv__print--person {
+      --print-w: min(94%, 54cqh);
+    }
+
+    .p-fv__print--fry {
+      --print-x: 27%;
+      --print-w: min(54%, 33cqh);
+      inset-block-end: -4%;
+    }
+
+    .p-fv__print--hands {
+      --print-x: 77%;
+      --print-w: min(46%, 29cqh);
+      inset-block-end: -2%;
+    }
+  }
+}
+
+// 人の写真が描ける状態になって配り始めるまで、紙を隠して待つ（隠さないと、置いた紙が一度消えてから配られる）。
+// 写真の読み込みに失敗しても配り始める。script が止まっていても、A と同じ時間（$_steam-failsafe）がたったら出す
+.p-fv.is-prints-pending .p-fv__print {
+  visibility: hidden;
+  animation: p-fv-steam-failsafe 0s $_steam-failsafe forwards;
+}
+
+// 配る動き（読み込み時に1回）。下から配られて、それぞれの傾き（--print-r）に落ち着く。はね返りは付けない。
+// 2026-10-06 に GSAP から CSS に移した（GSAP を待つと、遅い回線で写真が出るまで 3秒前後かかった）。値は前の GSAP と同じ：
+//   1.1秒・power3.out と同じ曲線・0.15秒待ってから 0.14秒ずつ。人の写真が描ける状態になってから、FV の中の小さな script が is-prints-dealt を付ける
+.p-fv.is-prints-dealt .p-fv__print {
+  animation: p-fv-print-deal 1.1s cubic-bezier(0.165, 0.84, 0.44, 1) calc(0.15s + var(--print-i) * 0.14s) backwards;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+// 終わりは書かない（＝紙のいつもの傾きと不透明に戻る）。
+// 始まりの透明度は 0 ではなく 0.01（見た目は同じ）。0 から始めると、Chrome は透明のまま描いた写真を表示と数えず、
+// 動きの間は描き直しもしないので、動きが終わるまで LCP が記録されなかった（遅い回線の 375px で 1.90秒 → 3.16秒。2026-10-06 実測）
+@keyframes p-fv-print-deal {
+  from {
+    opacity: 0.01;
+    transform: translateY(60px) rotate(var(--print-from));
+  }
+}

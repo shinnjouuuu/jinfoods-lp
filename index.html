@@ -28,6 +28,23 @@
 <!-- 2026-10-02：ロゴ（images/logo.png）の左のマークから作った仮のアイコン。ロゴの元データが届いたら作り直す（確認のお願い 7） -->
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<script>
+  // FV B（URL に ?fv=b）のときだけ、人の写真（B でいちばん大きく出る＝LCP）を先に読む（2026-10-06）。
+  // CSS の <link> より前に置く：CSS の後ろの script は CSS が届くまで動かず、先読みが 0.78秒まで遅れていた（遅い回線の 1440px）。
+  // 幅で切り抜きが違うので media で分ける（FV の picture の source と同じ条件）
+  if (/[?&]fv=b(&|$)/.test(location.search)) {
+    [['(max-width: 768px)', 'images/fv/fvb-person-tall.webp'], ['(min-width: 768.02px)', 'images/fv/fvb-person-wide.webp']].forEach(function (p) {
+      var l = document.createElement('link');
+      l.rel = 'preload';
+      l.as = 'image';
+      l.type = 'image/webp';
+      l.media = p[0];
+      l.href = p[1];
+      l.setAttribute('fetchpriority', 'high');
+      document.head.appendChild(l);
+    });
+  }
+</script>
 <link rel="stylesheet" href="css/style.css">
 <!-- 構造化データ（2026-10-02、hallmark check P3）。値は画面と同じ。営業時間は確認のお願い17の答えが来るまで入れない -->
 <script type="application/ld+json">
@@ -140,11 +157,18 @@
       <img class="p-fv__steam-img js-fv-steam-img" src="images/fv/fv-09.jpg" alt="" width="400" height="400" loading="lazy" decoding="async">
     </div>
     <script>
-      // 3D を試せるときだけ、CSS の写真を隠して待つ（js/fv-steam.js が 3D にするか、だめなら戻す）
-      (function (el) {
+      // FV の出し分け（2026-10-05）：URL に ?fv=b があれば B「紙焼き」、無ければ A「湯気の層」。描く前に決めて、ちらつかせない。
+      // 動きを試せるときだけ、写真を隠して待つ（A は js/fv-steam.js が 3D にするか戻す。B は紙焼きの下の小さな script が配り始める）
+      (function (fv) {
         var m = window.matchMedia, c = navigator.connection;
-        if (m && !m('(prefers-reduced-motion: reduce)').matches && !(c && c.saveData)) el.classList.add('is-pending');
-      })(document.querySelector('.js-fv-steam'));
+        var move = m && !m('(prefers-reduced-motion: reduce)').matches && !(c && c.saveData);
+        if (/[?&]fv=b(&|$)/.test(location.search)) {
+          fv.classList.add('is-fv-b');  // 人の写真の先読みは <head> の script（CSS より前）
+          if (move) fv.classList.add('is-prints-pending');
+          return;
+        }
+        if (move) fv.querySelector('.js-fv-steam').classList.add('is-pending');
+      })(document.querySelector('.js-fv'));
     </script>
     <div class="p-fv__inner l-inner">
       <div class="p-fv__type">
@@ -155,6 +179,59 @@
         <a class="c-btn c-btn--primary js-anchor" data-cta="contact-fv" href="#contact">お問い合わせ<span class="c-btn__arrow" aria-hidden="true">→</span></a>
         <a class="c-btn c-btn--text js-anchor" href="#service">事業内容を見る<span class="c-arrow-line" aria-hidden="true"></span></a>
       </div>
+      <!-- B「紙焼き」（?fv=b のときだけ出す。無しは上の写真の層＝A）。置き場所と配る動きは _fv.scss、マウスで傾ける動きは js/fv-prints.js。
+           A のときは出さないので、写真は loading="lazy" で読まない（B のときだけ、下の script が人の写真をすぐ読ませる）。
+           人の写真は md〜で横長の切り抜きに替える。WebP を先に出し、読めない端末には JPEG（揚げ物は WebP にしても 82→72KB で画質が落ちるので JPEG だけ） -->
+      <div class="p-fv__prints">
+        <div class="p-fv__print p-fv__print--person js-fv-print" data-depth="1">
+          <div class="p-fv__print-ph">
+            <picture>
+              <source media="(min-width: 768.02px)" srcset="images/fv/fvb-person-wide.webp" type="image/webp" width="1108" height="1180">
+              <source media="(min-width: 768.02px)" srcset="images/fv/fvb-person-wide.jpg" width="1108" height="1180">
+              <source srcset="images/fv/fvb-person-tall.webp" type="image/webp" width="600" height="1130">
+              <img class="p-fv__print-img js-fv-print-lead" src="images/fv/fvb-person-tall.jpg" alt="厨房で、青い手袋をして魚の切り身をバットに並べるスタッフ" width="600" height="1130" loading="lazy" decoding="async">
+            </picture>
+          </div>
+        </div>
+        <div class="p-fv__print p-fv__print--hands js-fv-print" data-depth="1.5">
+          <div class="p-fv__print-ph">
+            <picture>
+              <source srcset="images/fv/fvb-hands-tall.webp" type="image/webp">
+              <img class="p-fv__print-img" src="images/fv/fvb-hands-tall.jpg" alt="" width="500" height="680" loading="lazy" decoding="async" fetchpriority="low">
+            </picture>
+          </div>
+        </div>
+        <div class="p-fv__print p-fv__print--fry js-fv-print" data-depth="1.3">
+          <div class="p-fv__print-ph">
+            <img class="p-fv__print-img" src="images/fv/fvb-fry.jpg" alt="" width="640" height="480" loading="lazy" decoding="async" fetchpriority="low">
+          </div>
+        </div>
+        <div class="p-fv__print p-fv__print--meal js-fv-print" data-depth="1.15">
+          <div class="p-fv__print-ph">
+            <picture>
+              <source srcset="images/fv/fvb-meal.webp" type="image/webp">
+              <img class="p-fv__print-img" src="images/fv/fvb-meal.jpg" alt="" width="640" height="480" loading="lazy" decoding="async" fetchpriority="low">
+            </picture>
+          </div>
+        </div>
+      </div>
+      <script>
+        // B のときだけ：人の写真をすぐ読ませ（lazy を外す）、写真が届いて描ける状態（decode）になってから配る動きを始める（_fv.scss の is-prints-dealt）。
+        // GSAP を待たないので、遅い回線でも写真がすぐ出る（2026-10-06）。動きを減らす設定では is-prints-pending が無いので、置いたまま
+        (function (fv) {
+          if (!fv.classList.contains('is-fv-b')) return;
+          var img = fv.querySelector('.js-fv-print-lead');
+          img.setAttribute('fetchpriority', 'high');
+          img.loading = 'eager';
+          if (!fv.classList.contains('is-prints-pending')) return;
+          var deal = function () {
+            fv.classList.remove('is-prints-pending');
+            fv.classList.add('is-prints-dealt');
+          };
+          if (img.decode) img.decode().then(deal, deal);
+          else deal();
+        })(document.querySelector('.js-fv'));
+      </script>
     </div>
   </section>
 
@@ -180,10 +257,10 @@
           <div class="c-media c-media--4x3">
             <!-- lazy にしない：FV を中身の高さにしたので、430×932・タブレット（768×1024／820×1180）・1440×900 では最初の画面に入る。
                  375・390幅の iPhone と 1024×768 では入らない（2026-10-01 実測。以前はこのコメントのまま lazy が付いていた） -->
-            <img class="c-media__img" src="images/about-main.jpg" alt="厨房で調理をするスタッフ" width="640" height="480"><span class="c-image-note">イメージ</span>
+            <img class="c-media__img" src="images/about-main.jpg" alt="厨房で調理をするスタッフ" width="640" height="480" fetchpriority="low"><span class="c-image-note">イメージ</span>
           </div>
           <div class="c-media c-media--4x3">
-            <img class="c-media__img" src="images/about-sub.jpg" alt="配膳されたトレー" width="560" height="420" loading="lazy">
+            <img class="c-media__img" src="images/about-sub.jpg" alt="配膳されたトレー" width="560" height="420" loading="lazy" fetchpriority="low">
           </div>
         </div>
       </div>
@@ -234,7 +311,7 @@
        「うち病院1」は受託施設の注記へ。「大分市・豊後大野市・別府市」はすぐ下の受託施設一覧に任せて外した -->
   <section class="l-section l-section--paper l-section--wave p-stats" id="stats" aria-labelledby="stats-title">
     <div class="p-stats__bg js-parallax" aria-hidden="true">
-      <img class="p-stats__bg-img" src="images/stats-bg.jpg" alt="" width="1600" height="500" loading="lazy">
+      <img class="p-stats__bg-img" src="images/stats-bg.jpg" alt="" width="1600" height="500" loading="lazy" fetchpriority="low">
     </div>
     <div class="p-stats__scrim" aria-hidden="true"></div>
 
@@ -711,5 +788,6 @@
 
 <script src="js/main.js" defer></script>
 <script src="js/fv-steam.js" defer></script>
+<script src="js/fv-prints.js" defer></script>
 </body>
 </html>

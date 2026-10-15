@@ -199,6 +199,8 @@ $_wave-shapes: (
   --color-on-photo-sub: color-mix(in srgb, var(--color-white) 88%, transparent);
   --shadow-card: 0 2px 10px rgb(31 27 25 / 0.06);
   --shadow-bar: 0 -4px 12px rgb(31 27 25 / 0.08);
+  // FV B の紙焼き（2026-10-05）。紙が地から少し浮いて見える2段の影（近くの細い影＋遠くのやわらかい影）
+  --shadow-print: 0 1px 2px rgb(31 27 25 / 0.12), 0 12px 28px rgb(31 27 25 / 0.16);
 
   // ---- タイポグラフィ ----
   // 2026-09-30 夜 B案：読み込むのは見出しの Zen角ゴシック（700）と英数字の Jost（500・700）だけ。本文は端末の書体。

@@ -41,6 +41,7 @@
   --color-on-photo-sub: color-mix(in srgb, var(--color-white) 88%, transparent);
   --shadow-card: 0 2px 10px rgb(31 27 25 / 0.06);
   --shadow-bar: 0 -4px 12px rgb(31 27 25 / 0.08);
+  --shadow-print: 0 1px 2px rgb(31 27 25 / 0.12), 0 12px 28px rgb(31 27 25 / 0.16);
   --font-base: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
   --font-head: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Yu Gothic", Meiryo, sans-serif;
   --font-en: "Jost", "Helvetica Neue", Arial, sans-serif;
@@ -1875,6 +1876,214 @@ html:has(:modal) {
 @keyframes p-fv-steam-failsafe {
   to {
     visibility: visible;
+  }
+}
+.p-fv__prints {
+  display: none;
+}
+
+.p-fv.is-fv-b .p-fv__steam {
+  display: none;
+}
+
+.p-fv.is-fv-b .p-fv__inner {
+  position: static;
+}
+@media (max-width: 768px) {
+  .p-fv.is-fv-b .p-fv__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(24px, 15.5492957746px + 2.2535211268vw, 48px) 1.25rem;
+    max-inline-size: 32rem;
+  }
+}
+
+.p-fv.is-fv-b .p-fv__type,
+.p-fv.is-fv-b .p-fv__cta {
+  position: relative;
+  z-index: var(--z-fv-copy);
+}
+
+@media (max-width: 768px) {
+  .p-fv.is-fv-b .p-fv__type {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .p-fv.is-fv-b .p-fv__cta {
+    grid-column: 1/-1;
+  }
+}
+.p-fv.is-fv-b .p-fv__prints {
+  display: block;
+  position: relative;
+  z-index: var(--z-fv-photo);
+  pointer-events: none;
+}
+@media (max-width: 768px) {
+  .p-fv.is-fv-b .p-fv__prints {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: stretch;
+    container-type: size;
+  }
+}
+@media (min-width: 768.02px) {
+  .p-fv.is-fv-b .p-fv__prints {
+    position: absolute;
+    inset-block: var(--header-height) var(--wave-height);
+    inset-inline: max(0px, (100% - 1600px) / 2);
+    perspective: 1400px;
+  }
+}
+
+.p-fv__print {
+  position: absolute;
+  inset-inline-start: var(--print-x);
+  inline-size: var(--print-w);
+  margin-inline-start: calc(var(--print-w) / -2);
+  padding: clamp(6px, 3.8873239437px + 0.5633802817vw, 12px);
+  padding-block-end: clamp(18px, 11.661971831px + 1.6901408451vw, 36px);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-print);
+  transform: rotate(var(--print-r));
+  transform-style: preserve-3d;
+  pointer-events: auto;
+}
+
+.p-fv__print-ph {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--print-ar);
+  background-color: var(--color-sub);
+}
+
+.p-fv__print-img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--print-pos, 50% 50%);
+}
+
+.p-fv__print--person {
+  --print-i: 0;
+  --print-from: -10deg;
+  --print-x: 50%;
+  --print-w: min(92%, 50cqh);
+  --print-r: -2deg;
+  --print-ar: 600 / 1130;
+  --print-pos: 50% 12%;
+  inset-block-start: 0;
+  z-index: 2;
+}
+@media (min-width: 768.02px) {
+  .p-fv__print--person {
+    --print-x: 17%;
+    --print-w: clamp(240px, 28vw, 430px);
+    --print-r: -2.5deg;
+    --print-ar: 1108 / 1180;
+    --print-pos: 50% 30%;
+    inset-block-start: 5%;
+  }
+}
+
+.p-fv__print--hands {
+  --print-i: 1;
+  --print-from: 12deg;
+  --print-x: 76%;
+  --print-w: min(44%, 23cqh);
+  --print-r: 4deg;
+  --print-ar: 500 / 680;
+  inset-block-end: -1%;
+  z-index: 4;
+}
+@media (min-width: 768.02px) {
+  .p-fv__print--hands {
+    --print-x: calc(50% + clamp(232px, 21vw, 300px) + var(--print-w) / 2);
+    --print-w: clamp(130px, 15vw, 220px);
+    --print-r: 3.5deg;
+    inset-block: 3% auto;
+    z-index: 3;
+  }
+}
+
+.p-fv__print--fry {
+  --print-i: 2;
+  --print-from: -10deg;
+  --print-x: 30%;
+  --print-w: min(52%, 27cqh);
+  --print-r: -4deg;
+  --print-ar: 4 / 3;
+  inset-block-end: -3%;
+  z-index: 3;
+}
+@media (min-width: 768.02px) {
+  .p-fv__print--fry {
+    --print-x: 90%;
+    --print-w: clamp(170px, 20vw, 300px);
+    --print-r: 2.5deg;
+    inset-block: 31% auto;
+    z-index: 2;
+  }
+}
+
+.p-fv__print--meal {
+  display: none;
+  --print-i: 3;
+  --print-from: 12deg;
+  --print-ar: 4 / 3;
+}
+@media (min-width: 768.02px) {
+  .p-fv__print--meal {
+    display: block;
+    --print-x: calc(50% + clamp(232px, 21vw, 300px) + 24px + var(--print-w) / 2);
+    --print-w: clamp(190px, 22vw, 320px);
+    --print-r: -1.5deg;
+    inset-block-start: 57%;
+    z-index: 3;
+  }
+}
+
+@media (max-width: 359px) {
+  .p-fv__print--fry,
+  .p-fv__print--hands {
+    display: none;
+  }
+}
+@media (min-width: 400px) and (max-width: 768px) {
+  .p-fv__print--person {
+    --print-w: min(94%, 54cqh);
+  }
+  .p-fv__print--fry {
+    --print-x: 27%;
+    --print-w: min(54%, 33cqh);
+    inset-block-end: -4%;
+  }
+  .p-fv__print--hands {
+    --print-x: 77%;
+    --print-w: min(46%, 29cqh);
+    inset-block-end: -2%;
+  }
+}
+.p-fv.is-prints-pending .p-fv__print {
+  visibility: hidden;
+  animation: p-fv-steam-failsafe 0s 6s forwards;
+}
+
+.p-fv.is-prints-dealt .p-fv__print {
+  animation: p-fv-print-deal 1.1s cubic-bezier(0.165, 0.84, 0.44, 1) calc(0.15s + var(--print-i) * 0.14s) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-fv.is-prints-dealt .p-fv__print {
+    animation: none;
+  }
+}
+
+@keyframes p-fv-print-deal {
+  from {
+    opacity: 0.01;
+    transform: translateY(60px) rotate(var(--print-from));
   }
 }
 .p-about__inner {

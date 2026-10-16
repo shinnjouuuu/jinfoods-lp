@@ -1,0 +1,143 @@
+/* Clearer type on the dark ground, every page. Sizes are left exactly as they are;
+   only weight, colour and a hairline of shadow change. Loaded last. */
+
+:root {
+  /* Cream text a step brighter, so thin Mincho strokes do not sink into the indigo. */
+  --rt-text: #f1ece2;
+  --rt-text-hi: #fbf8f1;
+  --rt-gold-clear: #ecd18f;
+}
+
+/* ---------- Japanese in white ---------- */
+body { font-weight: 500; color: var(--rt-text); }
+.section-title,
+.message-title,
+.contact-title,
+.page-title,
+.page-heading,
+.hero-title,
+.dish-chapter-title,
+main :is(h2, h3, h4) { font-weight: 500; }
+.section-lead,
+.message-lead,
+.message-body,
+.page-lead,
+.prose,
+.page-section-lead,
+.dish-viewer-note,
+.contact-lead,
+.contact-card-note,
+.site-footer { color: var(--rt-text); }
+/* Over photos, a soft dark halo keeps every stroke readable. */
+.page-hero--photo :is(.page-title, .page-lead, .breadcrumbs),
+.recruit-copy { text-shadow: 0 1px 2px rgb(14 17 22 / .85), 0 0 14px rgb(14 17 22 / .6); }
+
+/* ---------- English and numerals (Cormorant) ---------- */
+/* Bolder and a brighter gold wherever the Latin face is used. */
+.label-en,
+.dish-chapter-en,
+.dish-index-count,
+.service-num,
+.service-action,
+.offer-num,
+.reason-num,
+.topic-num,
+.facility-num,
+.step-num,
+.job-type,
+.timeline time,
+.news-list time,
+.post-date,
+.post-hero-date,
+.contact-tel-num,
+.nav-tel,
+.footer-bottom,
+.back-top,
+.menu-toggle-label,
+.point-list li::before {
+  font-weight: 700;
+  -webkit-font-smoothing: auto;
+}
+.dish-chapter-en,
+.dish-index-count,
+.service-num,
+.service-action,
+.offer-num,
+.reason-num,
+.topic-num,
+.facility-num,
+.step-num,
+.job-type,
+.timeline time,
+.post-date,
+.post-hero-date { color: var(--rt-gold-clear); }
+.news-list time { font-style: normal; }
+.footer-bottom { color: var(--rt-text); }
+
+/* The cream news panel keeps dark ink. */
+.news { color: var(--rt-cream-ink); }
+.news-list time { color: #8a6a2a; }
+
+/* Footer: address, phone and links in brighter, heavier type (sizes unchanged). */
+.site-footer address,
+.site-footer address a,
+.footer-nav a,
+.footer-map {
+  font-weight: 600;
+  color: var(--rt-text-hi);
+  -webkit-font-smoothing: auto;
+}
+.site-footer address { letter-spacing: .08em; }
+.footer-map { border-color: rgb(223 192 122 / .7); }
+.footer-nav a:hover { color: var(--rt-gold-clear); }
+
+/* Top page Service on phones and tablets: a larger photo beside the words. */
+@media (max-width: 899px) {
+  .service-item { grid-template-columns: 54% 1fr; column-gap: 18px; }
+}
+
+/* Service page intro: give the opening message and its meal photo equal presence. */
+.page--service > .split:first-of-type .page-heading {
+  font-size: clamp(32px, 3.6vw, 48px);
+  line-height: 1.55;
+}
+.page--service > .split:first-of-type .prose {
+  font-size: clamp(17px, 1.6vw, 19px);
+  line-height: 2.1;
+}
+@media (min-width: 900px) {
+  .page--service > .split:first-of-type {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(40px, 4vw, 56px);
+  }
+  .page--service > .split:first-of-type .split-photo {
+    width: calc(100% + var(--gutter));
+    max-width: 640px;
+    justify-self: end;
+  }
+}
+@media (max-width: 899px) {
+  .page--service > .split:first-of-type .split-photo { width: min(100%, 560px); }
+}
+@media (max-width: 599px) {
+  .page--service > .split:first-of-type .split-copy { min-width: 0; }
+  .page--service > .split:first-of-type .prose {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+@media (min-width: 900px) {
+  .page--service > .split:first-of-type .split-photo { margin-right: calc(var(--gutter) * -1); }
+}
+
+/* Service "私たちの仕事": each card framed by a thin gold line, full gold on hover. */
+.offer-card a {
+  border: 1px solid rgb(223 192 122 / .55);
+  transition: border-color .4s, background-color .4s;
+}
+.offer-card a:hover,
+.offer-card a:focus-visible { border-color: var(--rt-gold); }
+/* Inside the frame the words keep the same inset on every screen. */
+.offer-card a { padding-bottom: 26px; }
+.offer-card :is(.offer-num, h3, p) { margin-inline: 22px; }

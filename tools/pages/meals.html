@@ -1,0 +1,32 @@
+<!--
+title: 毎日の食事
+en: Daily Meals
+lead: 献立の工夫や季節の楽しみを、<br class="pc-only">写真とともにご紹介します。
+description: 株式会社JIN foodsが施設でお出ししている毎日の食事、行事食、デザート、ビュッフェの写真をご紹介します。
+photo: hero-meals.webp|3344|922|一皿ずつ盛り付けを仕上げる株式会社JIN foodsのスタッフ
+tone: dark
+contact: yes
+-->
+    <section class="page-section" aria-labelledby="gallery-title">
+      <div class="page-intro">
+        <h2 id="gallery-title" class="page-heading">今日も、食べるのが楽しみ。</h2>
+        <div class="prose">
+          <p>管理栄養士や調理スタッフがアイデアを出し合い、<br class="pc-only">食べやすさとおいしさを両立できるよう、献立を見直しています。</p>
+        </div>
+      </div>
+      {{meal-gallery}}
+    </section>
+
+    <dialog class="dish-viewer" aria-labelledby="dish-viewer-name">
+      <div class="dish-viewer-inner">
+        <figure class="dish-viewer-photo"><img src="" alt="" width="1600" height="1200"></figure>
+        <div class="dish-viewer-copy">
+          <p class="dish-viewer-tag"></p>
+          <h2 id="dish-viewer-name" class="dish-viewer-name"></h2>
+          <p class="dish-viewer-note"></p>
+        </div>
+        <button class="dish-viewer-nav dish-viewer-nav--prev" type="button" data-step="-1" aria-label="前の料理"><span aria-hidden="true"></span></button>
+        <button class="dish-viewer-nav dish-viewer-nav--next" type="button" data-step="1" aria-label="次の料理"><span aria-hidden="true"></span></button>
+        <button class="dish-viewer-close" type="button" aria-label="閉じる"><span aria-hidden="true"></span></button>
+      </div>
+    </dialog>

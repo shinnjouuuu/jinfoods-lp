@@ -1,0 +1,856 @@
+/* Top page only: a ryotei-style skin over the shared styles.
+   Deep indigo ground, gold hairlines and accents, Mincho throughout, vertical headings.
+   Loaded after the other stylesheets by index.html alone, so the sub-pages keep their look. */
+
+:root {
+  --rt-ink: #1a2638;
+  --rt-ink-deep: #121b2a;
+  --rt-ink-night: #0e1116;
+  /* Text on the indigo ground is pure white so it reads crisply. */
+  --rt-text: #fff;
+  --rt-text-hi: #fff;
+  --rt-gold: #dfc07a;
+  --rt-gold-dark: #9c7a36;
+  --rt-gold-line: rgb(223 192 122 / .32);
+  --rt-cream: #f0ead9;
+  --rt-cream-ink: #1c2028;
+
+  /* Shared tokens re-pointed so every rule that uses them follows the new palette. */
+  --paper: var(--rt-ink);
+  --paper-deep: var(--rt-ink-deep);
+  --ink: var(--rt-text);
+  --line: var(--rt-gold-line);
+  --accent: var(--rt-gold);
+  --sans: var(--serif);
+}
+
+body {
+  background: var(--rt-ink);
+  color: var(--rt-text);
+  font-family: var(--serif);
+  font-weight: 500;
+  letter-spacing: .1em;
+}
+
+:focus-visible { outline-color: var(--rt-gold); }
+
+/* ---------- Labels and headings ---------- */
+/* Small spaced capitals in gold, led by a short gold rule. */
+.label-en,
+.label--light .label-en {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 500;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--rt-gold);
+}
+.label-en::before {
+  content: '';
+  flex: none;
+  width: 40px;
+  height: 1px;
+  background: currentColor;
+}
+
+.section-title,
+.message-title,
+.contact-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  letter-spacing: .2em;
+  color: var(--rt-text-hi);
+}
+.section-title { margin-top: 20px; font-size: clamp(26px, 3vw, 40px); }
+.section-lead { margin-top: 24px; line-height: 2.2; }
+
+/* ---------- Links and buttons ---------- */
+/* Text over a hairline, ending in a short line with a hooked tip. */
+.text-link {
+  gap: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(236 230 216 / .45);
+  font-family: var(--serif);
+  letter-spacing: .2em;
+  transition: color .4s, border-color .4s;
+}
+.text-link::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 6px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  border-radius: 0;
+  transform: skewX(45deg);
+}
+.text-link:hover { color: var(--rt-gold); border-color: var(--rt-gold); }
+.text-link:hover::after { background: none; border-color: currentColor; color: inherit; transform: skewX(45deg) translateX(6px); }
+
+.button,
+.button--light {
+  border-color: var(--rt-gold);
+  color: var(--rt-text-hi);
+  font-family: var(--serif);
+  letter-spacing: .24em;
+}
+.button::before,
+.button--light::before { background: var(--rt-gold); }
+.button:hover,
+.button--light:hover { color: var(--rt-ink-night); }
+
+/* ---------- Header ---------- */
+.site-header { border-bottom: 1px solid var(--rt-gold-line); color: var(--rt-text); }
+.site-header::before { background: rgb(18 27 42 / .86); }
+
+/* On the dark ground every logo swaps to a transparent copy with cream lettering (no plate).
+   The HTML keeps jin-logo.png. */
+.brand img,
+.opening-logo,
+.footer-brand img { content: url("../assets/jin-logo-dark.png"); }
+.brand img { height: 72px; }
+
+.nav-label { font-weight: 600; letter-spacing: .16em; }
+.site-nav li a::after { background: var(--rt-gold); }
+.site-nav li a:hover { color: var(--rt-gold); }
+
+.nav-contact {
+  border: 1px solid var(--rt-gold);
+  background: var(--rt-gold);
+  color: var(--rt-ink-night);
+  letter-spacing: .16em;
+}
+.nav-contact:hover { background: transparent; color: var(--rt-gold); }
+
+@media (max-width: 1023px) {
+  .brand img { height: 54px; }
+  .menu-toggle { border-left-color: var(--rt-gold-line); color: var(--rt-text); }
+  .site-nav { background: var(--rt-ink); }
+  .site-nav li a::before { border-color: var(--rt-gold); }
+  .nav-label { font-family: var(--serif); font-weight: 600; letter-spacing: .14em; }
+  .site-nav li a:hover, .site-nav li a[aria-current='page'] { color: var(--rt-gold); }
+  .nav-pill { border-color: var(--rt-gold-line); font-weight: 500; }
+  .nav-pill--accent { border-color: var(--rt-gold); background: var(--rt-gold); color: var(--rt-ink-night); }
+  .nav-tel { font-family: var(--latin); font-weight: 500; letter-spacing: .06em; color: var(--rt-text-hi); }
+  .nav-tel-note { font-family: var(--serif); }
+}
+
+/* ---------- Opening ---------- */
+.js .opening { background: var(--rt-ink); }
+.opening-logo { width: 120px; }
+.opening-line { background: var(--rt-gold); }
+
+/* ---------- Hero ---------- */
+/* The photo fills the whole screen; the vertical headline stands over it. */
+.hero {
+  display: block;
+  min-height: 100svh;
+  padding: 0;
+  background: var(--rt-ink-night);
+  color: var(--rt-text-hi);
+}
+.hero-visual {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  aspect-ratio: auto;
+}
+/* Dusk over the photo: darker at the edges and behind the headline. */
+.hero-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .55) 0%, rgb(14 17 22 / 0) 22%, rgb(14 17 22 / 0) 70%, rgb(14 17 22 / .6) 100%),
+    linear-gradient(270deg, rgb(14 17 22 / .78) 0%, rgb(14 17 22 / .38) 34%, rgb(14 17 22 / .12) 62%),
+    radial-gradient(ellipse at center, rgb(14 17 22 / 0) 55%, rgb(14 17 22 / .45) 100%);
+  transition: opacity 1.2s ease;
+}
+.hero.is-text-left .hero-visual::after {
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .55) 0%, rgb(14 17 22 / 0) 22%, rgb(14 17 22 / 0) 70%, rgb(14 17 22 / .6) 100%),
+    linear-gradient(90deg, rgb(14 17 22 / .78) 0%, rgb(14 17 22 / .38) 34%, rgb(14 17 22 / .12) 62%),
+    radial-gradient(ellipse at center, rgb(14 17 22 / 0) 55%, rgb(14 17 22 / .45) 100%);
+}
+
+.hero-copy {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--header-h) + clamp(32px, 9vh, 112px));
+  right: var(--gutter);
+  left: auto;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: clamp(20px, 2.4vw, 40px);
+  padding: 0;
+}
+.hero.is-text-left .hero-copy { right: auto; left: var(--gutter); }
+
+.hero-intro {
+  order: 0;
+  margin: 6px 0 0;
+  writing-mode: vertical-rl;
+  font-family: var(--serif);
+  font-size: 14px;
+  letter-spacing: .5em;
+  color: var(--rt-gold);
+}
+.hero-title {
+  writing-mode: vertical-rl;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(30px, min(3.2vw, 4.4vh), 46px);
+  line-height: 1.9;
+  letter-spacing: .24em;
+  color: var(--rt-text-hi);
+  text-shadow: 0 0 18px rgb(14 17 22 / .55), 0 0 2px rgb(14 17 22 / .6);
+}
+.hero-title-line + .hero-title-line { margin-top: 0; padding-top: 2em; }
+.hero-title em { color: var(--rt-gold); }
+.hero-title::before { content: none; }
+
+.hero-controls { right: var(--gutter); bottom: 28px; }
+.hero.is-text-left .hero-controls { right: var(--gutter); }
+.hero-button {
+  background: rgb(14 17 22 / .45);
+  border: 1px solid var(--rt-gold-line);
+  color: var(--rt-text-hi);
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+}
+.hero-button:hover { background: var(--rt-gold); border-color: var(--rt-gold); color: var(--rt-ink-night); }
+.hero-dot { height: 1px; background: rgb(246 241 230 / .45); box-shadow: none; }
+.hero-dot > span { background: var(--rt-gold); }
+
+@media (max-width: 899px) {
+  .hero { min-height: 100svh; }
+  .hero-visual { order: 0; margin-inline: 0; }
+  .hero-visual::after,
+  .hero.is-text-left .hero-visual::after {
+    background:
+      linear-gradient(180deg, rgb(14 17 22 / .6) 0%, rgb(14 17 22 / .1) 26%, rgb(14 17 22 / .1) 70%, rgb(14 17 22 / .65) 100%),
+      linear-gradient(270deg, rgb(14 17 22 / .7) 0%, rgb(14 17 22 / .3) 55%, rgb(14 17 22 / .2) 100%);
+  }
+  /* Phones keep the headline on the right for every photo. */
+  .hero-copy,
+  .hero.is-text-left .hero-copy {
+    top: calc(var(--header-h) + 36px);
+    right: var(--gutter);
+    left: auto;
+    flex-direction: row-reverse;
+    gap: 14px;
+  }
+  .hero-intro { order: 0; margin-top: 4px; font-size: 12px; }
+  .hero-title { font-size: clamp(24px, 7vw, 32px); font-weight: 500; line-height: 1.8; }
+  .hero-title-line + .hero-title-line { padding-top: 1.6em; }
+  .hero-controls { right: var(--gutter); bottom: 20px; }
+}
+
+/* ---------- Message ---------- */
+.message {
+  padding-block: clamp(96px, 11vw, 168px) clamp(80px, 9vw, 136px);
+}
+.message-lead { color: var(--rt-gold); letter-spacing: .2em; }
+.message-body { line-height: 2.4; }
+
+.message-photo img { filter: brightness(.94); }
+
+@media (min-width: 900px) {
+  /* The words stand in vertical columns, read from the right. */
+  .message-copy {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    grid-template-areas:
+      'label label label'
+      'body  lead  title'
+      'link  link  link';
+    justify-content: end;
+    column-gap: clamp(20px, 2.4vw, 36px);
+    padding-top: 0;
+  }
+  .message-copy .label { grid-area: label; justify-self: end; margin-bottom: 36px; }
+  .message-title {
+    grid-area: title;
+    margin: 0;
+    writing-mode: vertical-rl;
+    font-size: clamp(28px, 2.8vw, 40px);
+    line-height: 1.9;
+  }
+  .message-lead { grid-area: lead; margin: 0; padding-top: 4em; writing-mode: vertical-rl; }
+  .message-body { grid-area: body; margin: 0; padding-top: 8em; writing-mode: vertical-rl; line-height: 2.2; }
+  .message-copy .text-link { grid-area: link; justify-self: end; margin-top: 48px; }
+}
+
+/* ---------- Services ---------- */
+.services {
+  padding-block: clamp(80px, 9vw, 136px);
+  background: var(--rt-ink-deep);
+  box-shadow: 0 0 0 100vmax var(--rt-ink-deep);
+}
+.services-list { margin-top: clamp(40px, 4vw, 64px); }
+@media (min-width: 900px) {
+  .services-head,
+  .meals-head { max-width: none; }
+  .services .section-title,
+  .meals-head .section-title { white-space: nowrap; }
+}
+.service-item-photo { filter: brightness(.94); }
+.service-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 22px;
+  letter-spacing: .2em;
+  color: var(--rt-gold);
+}
+.service-num::after { content: none; }
+.service-item h3 { color: var(--rt-text-hi); letter-spacing: .18em; }
+.service-item .service-action { color: var(--rt-gold); letter-spacing: .14em; }
+.service-name { color: var(--rt-text-hi); letter-spacing: .14em; }
+.services-more { margin-top: clamp(40px, 4vw, 56px); }
+
+/* ---------- Meals ---------- */
+.meals { background: var(--rt-ink); }
+.meals-stage { padding-top: clamp(80px, 9vw, 136px); }
+.meals-more { margin-top: clamp(32px, 4vw, 48px); }
+
+/* ---------- Recruit ---------- */
+.recruit-bg::after { background: linear-gradient(90deg, rgb(14 17 22 / .86), rgb(14 17 22 / .4)); }
+.recruit .section-lead { color: var(--rt-text); }
+
+/* ---------- News ---------- */
+/* A cream panel on the indigo ground, like a sheet of washi. */
+.news {
+  width: calc(100% - var(--gutter) * 2);
+  max-width: var(--max);
+  margin-block: clamp(80px, 9vw, 136px);
+  padding: clamp(40px, 5vw, 72px) clamp(24px, 5vw, 72px);
+  background: var(--rt-cream);
+  color: var(--rt-cream-ink);
+}
+.news .label-en { color: var(--rt-gold-dark); }
+.news .text-link { color: var(--rt-cream-ink); border-color: rgb(28 32 40 / .4); }
+.news .text-link:hover { color: var(--rt-gold-dark); border-color: var(--rt-gold-dark); }
+.news-list { border-top-color: rgb(156 122 54 / .45); }
+.news-list li { border-bottom-color: rgb(156 122 54 / .3); }
+.news-list a:hover { color: var(--rt-gold-dark); }
+.news-list time { font-style: italic; color: var(--rt-gold-dark); }
+.news :focus-visible { outline-color: var(--rt-cream-ink); }
+
+/* ---------- Contact ---------- */
+.contact {
+  background: var(--rt-ink-deep);
+  border-top: 1px solid var(--rt-gold-line);
+  color: var(--rt-text);
+}
+.contact .label-en::after { content: ''; flex: none; width: 40px; height: 1px; background: currentColor; }
+.contact-title { margin-top: 20px; letter-spacing: .16em; }
+.contact-card {
+  background: transparent;
+  border-color: var(--rt-gold-line);
+  transition: background-color .4s, border-color .4s;
+}
+.contact-card:hover { transform: none; box-shadow: none; background: rgb(223 192 122 / .08); border-color: var(--rt-gold); }
+.contact-card-label { color: var(--rt-gold); letter-spacing: .2em; }
+.contact-tel-num { font-family: var(--latin); letter-spacing: .08em; color: var(--rt-text-hi); }
+.contact-tel-num svg { color: var(--rt-gold); }
+.contact-card-title { color: var(--rt-text-hi); letter-spacing: .2em; }
+
+/* ---------- Footer ---------- */
+.site-footer { background: var(--rt-ink); border-top-color: var(--rt-gold-line); }
+.footer-map { border-color: var(--rt-gold-line); }
+.footer-map:hover { background: var(--rt-gold); border-color: var(--rt-gold); color: var(--rt-ink-night); }
+.footer-nav a:hover { color: var(--rt-gold); }
+.footer-bottom { border-top-color: var(--rt-gold-line); letter-spacing: .12em; }
+.back-top {
+  position: fixed;
+  right: clamp(18px, 2.5vw, 36px);
+  bottom: clamp(18px, 2.5vw, 36px);
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--rt-gold-line);
+  border-radius: 50%;
+  background: rgb(18 28 40 / .92);
+  color: var(--rt-text-hi);
+  font-size: 0;
+  letter-spacing: 0;
+  box-shadow: 0 8px 28px rgb(4 9 16 / .28);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s, border-color .25s ease, background-color .25s ease;
+}
+.back-top::before {
+  content: '↑';
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--rt-text-hi);
+}
+.back-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.back-top:hover {
+  border-color: var(--rt-gold);
+  background: var(--rt-gold);
+}
+.back-top:hover::before { color: var(--rt-ink-night); }
+.back-top:focus-visible { outline: 2px solid var(--rt-gold-clear); outline-offset: 4px; }
+
+/* Phones: a compact footer. The links read down two equal columns, and Page Top
+   becomes a round arrow button (its words stay for screen readers). */
+@media (max-width: 899px) {
+  .site-footer { padding-top: 44px; }
+  .footer-inner { gap: 28px; }
+  .footer-brand img { width: 88px; }
+  .footer-info address { font-size: 15px; line-height: 2; }
+  .footer-map { margin-top: 16px; padding: 8px 22px; }
+  .footer-nav ul {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(4, auto);
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+  .footer-bottom { margin-top: 36px; padding-top: 20px; font-size: 12px; }
+  .back-top { width: 46px; height: 46px; }
+  .back-top::before { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-top { transition: none; }
+}
+
+@media (max-width: 899px) {
+  .news-head { align-items: center; gap: 16px; }
+}
+
+/* The hero is shorter than the window, so the photo does not fill the whole screen. */
+/* The photo reaches exactly to the bottom of the window. */
+.hero { min-height: max(520px, 100svh); }
+.hero-copy { top: calc(var(--header-h) + clamp(28px, 4.4vh, 56px)); }
+.hero-title { font-size: clamp(26px, min(2.8vw, 3.6vh), 40px); }
+.hero-title-line + .hero-title-line { padding-top: 1.5em; }
+@media (max-width: 899px) {
+  .hero { min-height: 80svh; }
+  .hero-copy, .hero.is-text-left .hero-copy { top: calc(var(--header-h) + 28px); }
+  .hero-title { font-size: clamp(22px, 6.4vw, 28px); }
+  .hero-title-line + .hero-title-line { padding-top: 1.4em; }
+}
+/* The headline stands at either side, so the slide controls sit in the middle. */
+@media (min-width: 900px) {
+  .hero-controls, .hero.is-text-left .hero-controls { left: 50%; right: auto; bottom: 24px; transform: translateX(-50%); }
+}
+
+/* ---------- Fresh photos ---------- */
+/* Food reads fresher a touch brighter and more saturated; the dark wash stays only
+   where text sits on a photo. */
+:root { --rt-photo-filter: brightness(1.05) saturate(1.2) contrast(1.05); }
+.hero-slide,
+.message-photo img,
+.service-item-photo,
+.meal-card img,
+.recruit-bg img { filter: var(--rt-photo-filter); }
+
+/* Hero: no vignette, only a shade behind the headline and under the header. */
+.hero-visual::after {
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .4) 0%, rgb(14 17 22 / 0) 18%),
+    linear-gradient(270deg, rgb(14 17 22 / .62) 0%, rgb(14 17 22 / .22) 28%, rgb(14 17 22 / 0) 50%);
+}
+.hero.is-text-left .hero-visual::after {
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .4) 0%, rgb(14 17 22 / 0) 18%),
+    linear-gradient(90deg, rgb(14 17 22 / .62) 0%, rgb(14 17 22 / .22) 28%, rgb(14 17 22 / 0) 50%);
+}
+@media (max-width: 899px) {
+  .hero-visual::after,
+  .hero.is-text-left .hero-visual::after {
+    background:
+      linear-gradient(180deg, rgb(14 17 22 / .45) 0%, rgb(14 17 22 / 0) 22%, rgb(14 17 22 / 0) 78%, rgb(14 17 22 / .4) 100%),
+      linear-gradient(270deg, rgb(14 17 22 / .6) 0%, rgb(14 17 22 / .2) 45%, rgb(14 17 22 / 0) 75%);
+  }
+}
+.recruit-bg::after { background: linear-gradient(90deg, rgb(14 17 22 / .78) 0%, rgb(14 17 22 / .3) 55%, rgb(14 17 22 / .08) 100%); }
+
+/* Hero text on busy, warm photos: a paler gold and a deeper shadow so the words float. */
+.hero-title,
+.hero-intro {
+  text-shadow:
+    0 1px 2px rgb(14 17 22 / .85),
+    0 0 12px rgb(14 17 22 / .8),
+    0 0 28px rgb(14 17 22 / .6);
+}
+.hero-title em,
+.hero-intro { color: #f5e1a8; }
+
+/* ---------- Typography: ryotei ----------
+   A classical Mincho (Zen Old Mincho) throughout, set light and airy: lighter weights,
+   wider letter-spacing, taller lines, kana at their full width (no palt), and the Latin
+   labels in a thin Cormorant. */
+:root {
+  --serif: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --sans: var(--serif);
+}
+body {
+  font-weight: 400;
+  line-height: 2.2;
+  letter-spacing: .12em;
+  font-feature-settings: normal;
+}
+@media (max-width: 599px) {
+  body { line-height: 2.1; letter-spacing: .08em; }
+}
+
+.label-en,
+.label--light .label-en {
+  font-family: var(--latin);
+  font-size: clamp(14px, 1.1vw, 16px);
+  font-weight: 400;
+  letter-spacing: .42em;
+}
+
+.section-title,
+.message-title,
+.contact-title,
+.page-title {
+  font-weight: 400;
+  letter-spacing: .22em;
+}
+.section-title { font-size: clamp(28px, 3.2vw, 44px); line-height: 1.8; }
+.section-lead { line-height: 2.4; letter-spacing: .14em; }
+.hero-title { font-weight: 400; letter-spacing: .26em; }
+
+h3,
+.service-item h3,
+.contact-card-title { font-weight: 500; letter-spacing: .2em; }
+
+.nav-label { font-weight: 500; letter-spacing: .2em; }
+.nav-contact,
+.button,
+.button--light,
+.text-link { letter-spacing: .28em; }
+
+.meal-card h3 { color: var(--rt-text-hi); }
+
+@media (max-width: 1023px) {
+  .nav-label { font-weight: 500; letter-spacing: .16em; }
+}
+/* Narrow desktops still need the menu on one line. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .nav-label,
+  .nav-contact { letter-spacing: .1em; }
+}
+
+/* The hero photos are busy trays of food, so the shade behind the headline is a little deeper. */
+.hero-visual::after {
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .4) 0%, rgb(14 17 22 / 0) 18%),
+    linear-gradient(270deg, rgb(14 17 22 / .78) 0%, rgb(14 17 22 / .4) 24%, rgb(14 17 22 / 0) 46%);
+}
+.hero.is-text-left .hero-visual::after {
+  background:
+    linear-gradient(180deg, rgb(14 17 22 / .4) 0%, rgb(14 17 22 / 0) 18%),
+    linear-gradient(90deg, rgb(14 17 22 / .78) 0%, rgb(14 17 22 / .4) 24%, rgb(14 17 22 / 0) 46%);
+}
+
+/* ---------- Less cropping ---------- */
+/* PC hero: the whole photo is shown at its own proportions, set beside the headline
+   (centred when the window is wide) and fading into the dark at both sides. */
+@media (min-width: 900px) {
+  .hero-slide {
+    --rt-hero-photo-w: calc((100svh - var(--header-h)) * 4 / 3);
+    --rt-hero-side: max(calc(var(--gutter) + clamp(200px, 18vw, 300px)), calc((100vw - var(--rt-hero-photo-w)) / 2));
+    inset: var(--header-h) var(--rt-hero-side) 0 auto;
+    width: auto;
+    height: calc(100% - var(--header-h));
+    max-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 10%, #000 88%, transparent 100%);
+  }
+  .hero-slide[data-layout='text-left'] { inset: var(--header-h) auto 0 var(--rt-hero-side); }
+}
+/* Keep every edge of the food photos visible throughout a slide change. */
+.hero-slide { transform: none; }
+.hero-slide.is-active { transform: none; }
+
+/* Service photos keep the camera's 4:3 instead of a wide 16:9 crop. */
+.service-item-photo { aspect-ratio: 4 / 3; }
+
+/* PC hero: show the complete 4:3 photograph inside the available photo area. */
+@media (min-width: 900px) {
+  .hero {
+    --rt-hero-side: calc(var(--gutter) + clamp(220px, 20vw, 360px));
+    --rt-hero-photo-w: min(calc((100svh - var(--header-h)) * 4 / 3), calc(100vw - var(--rt-hero-side)));
+    --rt-hero-copy-inset: max(var(--gutter), calc((100vw - var(--rt-hero-photo-w) - 300px) / 2));
+  }
+  .hero-slide {
+    --rt-hero-side: calc(var(--gutter) + clamp(220px, 20vw, 360px));
+    inset: var(--header-h) var(--rt-hero-side) 0 0;
+    width: calc(100% - var(--rt-hero-side));
+    object-fit: contain;
+    object-position: center;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hero-slide[data-layout='text-left'] {
+    inset: var(--header-h) 0 0 var(--rt-hero-side);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hero-copy { right: var(--rt-hero-copy-inset); gap: clamp(16px, 1.4vw, 26px); }
+  .hero.is-text-left .hero-copy { left: var(--rt-hero-copy-inset); }
+  .hero-intro { font-size: clamp(14px, 1.2vw, 17px); letter-spacing: .35em; }
+  .hero-title { font-size: clamp(28px, min(3vw, 4.8vh), 42px); letter-spacing: .18em; }
+}
+
+/* ---------- Message: one photo ----------
+   A single tray meal (one person's 御膳) beside the vertical words, in place of the
+   earlier two photos. */
+/* Match the overhead photo's frame so the complete tray stays visible. */
+.message-photo--single { position: relative; aspect-ratio: 4 / 3; }
+.message-photo--single img { transform: none; }
+.message-photo--single::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px 24px rgb(14 17 22 / .55);
+  pointer-events: none;
+}
+@media (min-width: 900px) {
+  .message {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-items: center;
+    column-gap: clamp(48px, 6vw, 112px);
+  }
+  .message-copy { grid-row: 1; }
+  .message-photo--single { grid-column: 2; grid-row: 1; }
+}
+@media (max-width: 899px) {
+  .message-photo--single { grid-column: 1 / -1; }
+  /* Phones: the photo comes straight after the words, and the link after the photo. */
+  .message { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+  .message-copy { display: contents; }
+  .message-photo--single { order: 1; align-self: stretch; margin: 8px 0 0; }
+  .message-copy .text-link { order: 2; margin-top: 32px; }
+}
+
+/* Phone numbers: Cormorant's figures lean like handwriting, so the numbers people
+   dial are set in the upright Mincho instead. */
+.contact-tel-num,
+.nav-tel { font-family: var(--serif); font-weight: 400; letter-spacing: .1em; }
+
+/* Contact cards: the form card's words larger, closer in weight to the phone number
+   beside it; the small lines in both cards a size up. */
+.contact-card-title { font-size: clamp(24px, 2.4vw, 30px); letter-spacing: .24em; }
+.contact-card-label,
+.contact-card-note { font-size: 15px; }
+
+/* News: the way to every notice is a button under the three latest, where the eye
+   lands after reading them (it used to be a small link beside the heading). */
+.news-more {
+  justify-self: center;
+  border-color: var(--rt-gold-dark);
+  color: var(--rt-cream-ink);
+  letter-spacing: .28em;
+}
+.news-more::before { background: var(--rt-gold-dark); }
+.news-more:hover { color: var(--rt-cream); }
+@media (min-width: 900px) {
+  .news-more { grid-column: 2; margin-top: 8px; }
+}
+
+/* News, shorter: tighter panel and rows, the date beside the title on every width,
+   and a slimmer button. */
+.news { gap: 24px; padding-block: clamp(28px, 3.6vw, 52px); }
+.news-list a {
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: clamp(16px, 3vw, 48px);
+  padding: 14px 32px 14px 0;
+  line-height: 1.7;
+}
+.news-list time { font-size: 15px; }
+.news-more { min-width: 200px; padding: 12px 32px; }
+@media (min-width: 900px) {
+  .news { row-gap: 20px; }
+  .news-head { gap: 20px; }
+  .news-list a { grid-template-columns: 120px 1fr; padding-block: 18px; }
+  .news-more { margin-top: 0; }
+}
+
+/* Text links, easier to read: normal spacing, a size up, cream text with the line
+   close underneath and a gold arrow. */
+.text-link,
+.text-link--small {
+  gap: 14px;
+  padding-bottom: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  color: var(--rt-text-hi);
+  border-bottom-color: rgb(223 192 122 / .6);
+}
+.text-link::after,
+.text-link--small::after {
+  width: 28px;
+  height: 6px;
+  border-color: var(--rt-gold);
+}
+.text-link:hover::after { border-color: currentColor; }
+.news .text-link { color: var(--rt-cream-ink); }
+.news .text-link::after { border-color: var(--rt-gold-dark); }
+
+/* ---------- Phone hero: the photo first, whole ----------
+   A tall phone screen cropped the 4:3 food photos down to their middle. On phones the
+   photo now sits right under the header at its own 4:3, and the words follow below it,
+   set across, so nothing has to stretch the photo box. ("html" lifts the few rules that
+   later stylesheets also set.) */
+@media (max-width: 899px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding-top: var(--header-h);
+  }
+  .hero-visual {
+    position: relative;
+    inset: auto;
+    order: 0;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    height: auto;
+  }
+  .hero-visual::after,
+  .hero.is-text-left .hero-visual::after {
+    background: linear-gradient(180deg, rgb(14 17 22 / 0) 70%, rgb(14 17 22 / .45) 100%);
+  }
+  .hero-slide,
+  .hero-slide[data-layout='text-left'] { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-controls,
+  .hero.is-text-left .hero-controls { right: 12px; bottom: 12px; }
+  .hero-copy,
+  .hero.is-text-left .hero-copy {
+    position: relative;
+    inset: auto;
+    order: 1;
+    display: block;
+    padding: 26px var(--gutter) 28px;
+  }
+  .hero-intro { margin: 0 0 12px; writing-mode: horizontal-tb; font-size: 12px; letter-spacing: .3em; }
+  .hero-title {
+    writing-mode: horizontal-tb;
+    font-size: clamp(22px, 6vw, 30px);
+    line-height: 1.75;
+    letter-spacing: .12em;
+    text-shadow: none;
+  }
+  .hero-title-line { display: block; }
+  .hero-title-line + .hero-title-line { padding-top: 0; }
+  html .hero-copy::after,
+  html .hero.is-text-left .hero-copy::after { top: 26px; right: var(--gutter); left: auto; }
+  /* The Message section starts closer under the hero. */
+  html .message { padding-top: 64px; }
+}
+
+/* English labels: same size, but bolder and a brighter gold so they read clearly. */
+.label-en,
+.label--light .label-en,
+.page-hero--photo .label-en {
+  font-weight: 700;
+  color: #ecd18f;
+  -webkit-font-smoothing: auto;
+  text-shadow: 0 0 1px rgb(236 209 143 / .35);
+}
+.page-hero--photo .label-en { text-shadow: 0 0 1px rgb(236 209 143 / .35), 0 1px 3px rgb(14 17 22 / .9), 0 0 14px rgb(14 17 22 / .7); }
+.news .label-en { font-weight: 700; color: #8a6a2a; text-shadow: none; }
+
+/* Phone hero, words on the photo: the copy is laid over the lower part of the photo,
+   set smaller, with a dark fade behind it; the arrows move to the photo's top right. */
+@media (max-width: 899px) {
+  .hero { position: relative; }
+  html .hero-visual::after,
+  html .hero.is-text-left .hero-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgb(14 17 22 / 0) 34%, rgb(14 17 22 / .6) 64%, rgb(14 17 22 / .9) 100%);
+  }
+  html .hero-copy,
+  html .hero.is-text-left .hero-copy {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 0 var(--gutter) 18px;
+  }
+  html .hero-intro { margin-bottom: 6px; font-size: 10px; letter-spacing: .26em; }
+  html .hero-title {
+    font-size: clamp(16px, 4.6vw, 22px);
+    line-height: 1.7;
+    letter-spacing: .1em;
+    text-shadow: 0 1px 3px rgb(14 17 22 / .8), 0 0 16px rgb(14 17 22 / .6);
+  }
+  html .hero-controls,
+  html .hero.is-text-left .hero-controls {
+    top: 10px;
+    bottom: auto;
+    right: 10px;
+    z-index: 4;
+    transform: scale(.78);
+    transform-origin: top right;
+  }
+  html .hero-copy::after,
+  html .hero.is-text-left .hero-copy::after { top: auto; bottom: 22px; right: var(--gutter); left: auto; }
+}
+@media (max-width: 899px) {
+  /* The fade sits above the stacked slides (they use z-index 2 themselves). */
+  html .hero-slides { position: absolute; inset: 0; z-index: 1; }
+}
+
+/* Phone hero: keep the food visible beneath the copy, with the lettering outlined
+   by its own shadow instead of a near-black wash over the lower photo. */
+@media (max-width: 899px) {
+  html .hero-visual::after,
+  html .hero.is-text-left .hero-visual::after {
+    background:
+      radial-gradient(ellipse 85% 48% at 18% 88%, rgb(14 17 22 / .58), rgb(14 17 22 / .3) 52%, transparent 100%),
+      linear-gradient(180deg, transparent 30%, rgb(14 17 22 / .12) 65%, rgb(14 17 22 / .34) 100%);
+  }
+  html .hero-intro { font-size: 11px; font-weight: 600; color: #ecd18f; text-shadow: 0 1px 3px #0e1116, 0 0 10px #0e1116; }
+  html .hero-title {
+    font-size: clamp(18px, 5.2vw, 24px);
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 3px #0e1116, 0 0 8px #0e1116, 0 0 18px rgb(14 17 22 / .9);
+  }
+}
+
+/* Top news: every row the same height (the tallest one's), the text centred in it,
+   so a two-line title does not make its row stand out. */
+.news-list { display: grid; grid-auto-rows: 1fr; }
+.news-list li { display: flex; }
+.news-list a { flex: 1; align-content: center; align-items: center; }
+/* A fixed date column so every title starts at the same place. */
+@media (max-width: 899px) {
+  .news-list a { grid-template-columns: 6.6em 1fr; }
+}

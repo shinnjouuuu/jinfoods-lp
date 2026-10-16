@@ -1,0 +1,1180 @@
+/* Final atmosphere layer: material, type and lamplight.
+   Structure and motion stay untouched; this file only unifies the ryotei skin. */
+
+:root {
+  --rt-display: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --rt-body: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  --rt-lacquer: #111b27;
+  --rt-lacquer-raised: #172538;
+  --rt-lamplight: #e7bd70;
+  --rt-text: #fff;
+  --rt-text-hi: #fff;
+  --rt-gold: #d9b56c;
+  --rt-gold-clear: #efd598;
+  --rt-gold-line: rgb(217 181 108 / .34);
+  --rt-photo-filter: brightness(.95) saturate(.94) contrast(1.09) sepia(.12);
+  --serif: var(--rt-body);
+  --sans: var(--rt-body);
+}
+
+/* Phone typography: keep equivalent cards consistent and allow narrow columns to shrink. */
+@media (max-width: 599px) {
+  html :is(.page-heading, .section-title, .message-title),
+  html .page--service > .split:first-of-type .page-heading {
+    font-size: 24px;
+    line-height: 1.65;
+    letter-spacing: .06em;
+    text-wrap: balance;
+  }
+  html .page .job-card h3 { font-size: 20px; line-height: 1.6; }
+  html .page .step-list h3,
+  html .page .step-list .step-title--nowrap { font-size: 18px; line-height: 1.6; letter-spacing: .04em; }
+  .step-list li { grid-template-columns: 24px minmax(0, 1fr); column-gap: 10px; }
+  .services .service-item { grid-template-columns: minmax(0, 54fr) minmax(0, 46fr); }
+  .services .service-item > :is(.service-concept, .service-name, p) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .services .service-name { white-space: normal; font-size: 16px; line-height: 1.65; letter-spacing: .04em; }
+  html .page :is(.reason-copy p, .topic-card p, .offer-card p, .step-list p,
+    .job-card dt, .job-card dd, .data-list dt, .data-list dd, .access-list dt,
+    .access-list dd, .policy p) { font-size: 15px; line-height: 1.85; }
+  .page :is(.split-copy, .reason-copy, .job-card, .topic-copy, .data-list dd) { min-width: 0; }
+}
+
+/* Material: indigo-dyed washi below, restrained lacquer on raised surfaces. */
+body {
+  background-color: var(--rt-ink);
+  background-image: url('../assets/texture-washi-soft.webp');
+  background-size: 512px;
+  background-blend-mode: overlay;
+  font-family: var(--rt-body);
+  font-weight: 500;
+  line-height: 2.15;
+  letter-spacing: .075em;
+  font-feature-settings: 'palt' 1;
+  font-kerning: normal;
+  -webkit-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+}
+
+.services,
+.meals,
+.contact,
+.site-footer,
+.page-section--tint {
+  background-image: url('../assets/texture-washi-soft.webp');
+  background-size: 512px;
+  background-blend-mode: overlay;
+}
+
+.services,
+.contact { background-color: #101a28; }
+
+.page-section--tint {
+  max-width: none;
+  padding-inline: max(var(--gutter), calc((100% - var(--max)) / 2));
+  background-color: #19283a;
+  box-shadow: none;
+  clip-path: none;
+}
+
+.meals { background-color: #1b2a3a; }
+
+.site-footer { background-color: var(--rt-ink); }
+
+.site-header::before {
+  background:
+    linear-gradient(rgb(17 29 43 / .97), rgb(17 29 43 / .97)),
+    url('../assets/texture-washi-soft.webp');
+  background-size: auto, 512px;
+  background-blend-mode: normal, overlay;
+  box-shadow: inset 0 -1px 0 rgb(239 213 152 / .18);
+}
+
+.contact-card,
+.job-card,
+.news-card a,
+.news-card-body,
+.step-list li,
+.offer-card a {
+  background: #142236;
+  border-color: var(--rt-gold-line);
+  box-shadow: none;
+}
+
+.news-card a:hover,
+.news-card a:focus-visible,
+.offer-card a:hover,
+.offer-card a:focus-visible {
+  border-color: rgb(239 213 152 / .72);
+}
+
+/* Align the three service card descriptions even when a title wraps. */
+.page--service .offer-card h3 { margin-top: 24px; }
+@media (min-width: 900px) {
+  .page--service .offer-card h3 {
+    min-height: 3.2em;
+    line-height: 1.6;
+    letter-spacing: .08em;
+    text-wrap: balance;
+  }
+}
+
+.contact-card:hover,
+.contact-card:focus-visible {
+  background: #192a40;
+  border-color: rgb(239 213 152 / .72);
+  box-shadow: none;
+}
+
+.news {
+  background-color: #1a2d46;
+  background-image: none;
+  color: var(--rt-text);
+  box-shadow: inset 0 0 0 1px rgb(217 181 108 / .52);
+}
+
+.news .label-en { font-size: 19px; letter-spacing: .24em; }
+.news .label-en,
+.news-list time { color: var(--rt-gold-clear); text-shadow: none; }
+.news-list { border-top-color: rgb(217 181 108 / .5); }
+.news-list li { border-bottom-color: rgb(217 181 108 / .42); }
+.news-list a { padding-block: 21px; font-size: 17px; line-height: 1.8; color: var(--rt-text-hi); }
+.news-list time { font-size: 17px; font-weight: 700; }
+.news-list a:hover { color: var(--rt-gold-clear); }
+.news .text-link,
+.news-more {
+  color: var(--rt-ink-night);
+  border-color: var(--rt-gold-clear);
+  background: var(--rt-gold-clear);
+  font-weight: 600;
+}
+.news .text-link::after { border-color: var(--rt-gold); }
+.news .text-link:hover,
+.news-more:hover { color: var(--rt-text-hi); background: transparent; }
+.news-more::before { background: #1a2d46; }
+.news :focus-visible { outline-color: var(--rt-gold-clear); }
+
+/* Centre the arrow independently of the link's hidden text. */
+html .back-top::before {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+/* Keep seasonal meal photos modest and uncropped on phones. */
+@media (max-width: 699px) {
+  html .page--service .event-card figure { width: min(100%, 300px); margin-inline: auto; aspect-ratio: auto; }
+  html .page--service .event-card img { width: 100%; height: auto; max-height: none; object-fit: contain; transform: none; }
+}
+
+/* The wider Kodomo no Hi photo uses the same landscape frame as the other dishes. */
+html .page--service .event-card--kodomo figure {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #142236;
+}
+html .page--service .event-card--kodomo figure img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+  transform: none;
+}
+html .page--service .event-card--kodomo:hover figure img { transform: none; }
+
+/* Compact contact section on phones. */
+@media (max-width: 899px) {
+  html .contact { padding-block: 36px; }
+  html .contact .label-en { font-size: 14px; }
+  html .contact .contact-title { margin-top: 14px; font-size: 22px; line-height: 1.6; letter-spacing: .08em; }
+  html .contact .contact-lead { margin-top: 12px; font-size: 14px; line-height: 1.8; }
+  html .contact-cards { margin-top: 22px; gap: 12px; }
+  html .contact-card { min-height: 0; padding: 20px 16px; gap: 8px; }
+  html .contact-tel-num { font-size: 26px; letter-spacing: .04em; }
+  html .contact-tel-num svg { width: 20px; height: 20px; }
+  html .contact-card-title { font-size: 19px; letter-spacing: .1em; }
+  html .contact-card-label,
+  html .contact-card-note { font-size: 12px; line-height: 1.7; }
+}
+
+/* Compact news panel on phones, with comfortable tap targets. */
+@media (max-width: 899px) {
+  html .news { margin-block: 40px; padding: 22px 20px; gap: 14px; }
+  html .news .label-en { font-size: 16px; }
+  html .news-list { grid-auto-rows: auto; }
+  html .news-list a {
+    grid-template-columns: 86px minmax(0, 1fr);
+    column-gap: 12px;
+    min-height: 60px;
+    padding: 12px 18px 12px 0;
+    font-size: 14px;
+    line-height: 1.7;
+    letter-spacing: .04em;
+  }
+  html .news-list time { font-size: 13px; }
+  html .news-more { min-width: 160px; min-height: 44px; padding: 9px 22px; font-size: 13px; }
+}
+
+/* Typography: expressive titles, quiet body copy, calligraphic Latin accents. */
+.hero-title,
+.message-title,
+.section-title,
+.contact-title,
+.page-title,
+.page-heading,
+.dish-chapter-title,
+.post-title,
+.policy h2,
+.service-item h3,
+.service-name,
+.reason-copy h3,
+.offer-card h3,
+.topic-card h3,
+.job-card h3,
+.contact-card-title {
+  font-family: var(--rt-display);
+  font-weight: 500;
+  font-feature-settings: 'palt' 1;
+}
+
+.hero-title,
+.page-title { letter-spacing: .2em; }
+
+.message-title,
+.section-title,
+.contact-title,
+.page-heading {
+  letter-spacing: .15em;
+  line-height: 1.75;
+}
+
+.section-lead,
+.message-lead,
+.message-body,
+.page-lead,
+.prose,
+.page-section-lead,
+.contact-lead,
+.contact-card-note,
+.service-item p,
+.reason-copy p {
+  letter-spacing: .075em;
+}
+
+.label-en,
+.label--light .label-en,
+.dish-chapter-en {
+  font-family: var(--latin);
+  font-weight: 600;
+  letter-spacing: .3em;
+}
+
+.nav-label,
+.nav-contact,
+.button,
+.button--light,
+.text-link,
+.footer-nav a {
+  letter-spacing: .12em;
+}
+
+/* Keep the desktop contact frame stable while web fonts are loading. */
+@media (min-width: 1280px) {
+  .site-nav > .nav-contact {
+    display: grid;
+    place-items: center;
+    flex: 0 0 164px;
+    inline-size: 164px;
+    block-size: 48px;
+    padding: 0;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .site-nav > .nav-contact {
+    display: grid;
+    place-items: center;
+    flex: 0 0 136px;
+    inline-size: 136px;
+    block-size: 42px;
+    padding: 0;
+  }
+}
+
+/* Mark the page currently being viewed with the site's gold accent. */
+.site-nav li a[aria-current='page'] { color: var(--rt-gold); }
+.site-nav li a[aria-current='page']::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Light: one warm source and a calm falloff across every photograph. */
+.hero-visual::before {
+  background:
+    radial-gradient(ellipse at 66% 8%, rgb(244 207 135 / .18), transparent 34%),
+    radial-gradient(ellipse at center, transparent 54%, rgb(7 12 19 / .42) 100%);
+}
+
+.message-photo,
+.split-photo,
+.reason-photo,
+.offer-card figure,
+.topic-card figure,
+.event-grid figure,
+.dish-photo,
+.oshinagaki-photo,
+.post-gallery figure {
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgb(239 213 152 / .2);
+}
+
+.message-photo::after,
+.split-photo::after,
+.reason-photo::after,
+.offer-card figure::after,
+.topic-card figure::after,
+.event-grid figure::after,
+.dish-photo::after,
+.oshinagaki-photo::after,
+.post-gallery figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgb(249 215 148 / .055), transparent 38%);
+  box-shadow: inset 0 0 0 1px rgb(239 213 152 / .13);
+}
+
+.message-photo--single::after {
+  background: linear-gradient(135deg, rgb(249 215 148 / .065), transparent 40%);
+  box-shadow: inset 0 0 0 1px rgb(239 213 152 / .16);
+}
+
+/* The left corner marks cross the bright tabletop in the service photo. */
+.page--service .split-photo:not(.split-photo--contain)::before {
+  --hook-line: #f0d18a;
+  filter: drop-shadow(0 0 1px rgb(8 12 17 / .95))
+    drop-shadow(0 0 2px rgb(8 12 17 / .75));
+}
+
+@media (min-width: 900px) {
+  .page--service > .split:first-of-type .split-copy { max-width: 540px; }
+  .page--service > .split:first-of-type .split-photo {
+    width: min(calc(100% + var(--gutter)), 600px);
+    max-width: none;
+    aspect-ratio: 3 / 2;
+  }
+}
+@media (min-width: 1300px) {
+  .page--service > .split:first-of-type .split-photo {
+    width: clamp(600px, calc(100vw - 710px), 730px);
+  }
+}
+
+/* Let the dishes in the home page message photo read clearly, including the
+   darker items at the back of the tray. */
+.message-photo--single img {
+  filter: brightness(1.14) contrast(.94) saturate(1.08);
+}
+
+/* Service cards show the food in a fresher, daylight tone. */
+.page--service .offer-card img {
+  filter: brightness(1.08) saturate(1.22) contrast(1.05);
+}
+.page--service .offer-card figure::after {
+  background:
+    radial-gradient(ellipse at 28% 8%, rgb(255 248 229 / .08), transparent 40%),
+    radial-gradient(ellipse at center, transparent 72%, rgb(7 12 19 / .12) 100%);
+}
+
+.page-hero--photo .page-hero-photo {
+  filter: brightness(.76) saturate(.72) sepia(.28) contrast(1.1);
+}
+
+.page-hero--dark::after,
+.page-hero--light::after {
+  background:
+    radial-gradient(ellipse at 74% 0%, rgb(238 193 111 / .14), transparent 35%),
+    linear-gradient(90deg, rgb(9 15 23 / .82) 0%, rgb(9 15 23 / .5) 46%, rgb(9 15 23 / .2) 75%, rgb(9 15 23 / .48) 100%),
+    linear-gradient(180deg, transparent 48%, rgb(7 12 19 / .48));
+}
+
+.recruit { background: #1a2d46; border-block: 1px solid rgb(217 181 108 / .34); }
+.recruit-bg { background: #1a2d46; }
+.recruit-bg img {
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+}
+.recruit-bg::after {
+  background: linear-gradient(90deg, rgb(12 12 12 / .78) 0%, rgb(12 12 12 / .55) 38%, rgb(12 12 12 / .2) 70%, rgb(12 12 12 / .08) 100%);
+}
+.recruit .button--light {
+  border-color: var(--rt-gold-clear);
+  background: var(--rt-gold-clear);
+  color: var(--rt-ink-night);
+  font-weight: 600;
+}
+.recruit .button--light::before { background: #1a2d46; }
+.recruit .button--light:hover { color: var(--rt-text-hi); }
+.recruit .label-en {
+  font-size: 19px;
+  letter-spacing: .24em;
+}
+
+.hero-button {
+  background: rgb(10 18 27 / .64);
+  border-color: rgb(239 213 152 / .42);
+  box-shadow: none;
+}
+
+.split-photo--contain { background: #16253a; }
+
+/* Top service photos: a quiet double gold frame, without a drop shadow. */
+.service-item-photo {
+  padding: 6px;
+  border: 1px solid rgb(217 181 108 / .78);
+  outline: 1px solid rgb(217 181 108 / .24);
+  outline-offset: -4px;
+  background: #101b2a;
+  box-shadow: none;
+}
+
+/* Top-page services use the same unified photo-and-copy cards as the service page. */
+@media (min-width: 900px) {
+  .services-list { align-items: stretch; }
+  .services .service-item {
+    display: flex;
+    min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    padding-bottom: 26px;
+    background: #142236;
+    border: 1px solid rgb(223 192 122 / .86);
+    box-shadow: inset 0 0 0 1px rgb(239 213 152 / .22);
+    transition: border-color .32s ease, box-shadow .32s ease;
+  }
+  .services .service-item-photo {
+    flex: none;
+    margin-bottom: 20px;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+  }
+  .services .service-concept,
+  .services .service-name,
+  .services .service-item > p {
+    margin-inline: 22px;
+  }
+  /* Reserve two title lines so all three descriptions begin on the same row. */
+  .services .service-name { min-height: 3.1em; }
+  .services .service-item > p { margin-top: 16px; }
+}
+
+@media (min-width: 900px) and (hover: hover) {
+  .services .service-item:hover {
+    border-color: var(--rt-gold-clear);
+    box-shadow: inset 0 0 0 1px rgb(239 213 152 / .5);
+  }
+}
+
+/* Every meal photo keeps its own gold frame without changing the marquee width. */
+.meal-card figure { position: relative; }
+.meal-card figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid rgb(217 181 108 / .72);
+  outline: 1px solid rgb(217 181 108 / .28);
+  outline-offset: -5px;
+  transition: border-color .32s ease, outline-color .32s ease;
+}
+@media (hover: hover) {
+  .meal-card a:hover figure::after {
+    border-color: var(--rt-gold-clear);
+    outline-color: rgb(239 213 152 / .68);
+  }
+}
+.meal-card a:focus-visible figure::after {
+  border-color: var(--rt-gold-clear);
+  outline-color: rgb(239 213 152 / .68);
+}
+
+/* Nutrition cards: image-led panels with copy revealed on hover or keyboard focus. */
+.page--service .topic-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--rt-gold-line);
+  background: var(--rt-lacquer);
+  isolation: isolate;
+  transition: flex-grow 1.2s cubic-bezier(.16, 1, .3, 1), border-color .35s ease;
+  will-change: flex-grow;
+}
+.page--service .topic-card figure {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  box-shadow: none;
+  background: #09121f;
+}
+.page--service .topic-card figure::after { content: none; }
+.page--service .topic-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.92) saturate(1.04) contrast(1.05);
+  transition: transform 1.05s cubic-bezier(.22, 1, .36, 1), filter .78s ease;
+}
+/* Keep the approved three-photo set even if legacy service markup is regenerated. */
+.page--service .topic-card:nth-child(1) img { content: url('../assets/nutrition-planning-v2.webp'); }
+.page--service .topic-card:nth-child(2) img { content: url('../assets/nutrition-meaning-v2.webp'); }
+.page--service .topic-card:nth-child(3) img { content: url('../assets/nutrition-vegetables-v3.webp'); }
+.page--service .topic-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(7 12 19 / .08) 24%, rgb(7 12 19 / .9) 100%);
+  opacity: .66;
+  transition: opacity .72s ease;
+}
+.page--service .topic-copy {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  padding: clamp(24px, 3vw, 42px);
+  color: var(--rt-text-hi);
+  opacity: 1;
+  transform: none;
+  transition: opacity .45s ease, transform .65s var(--ease-out);
+}
+.page--service .topic-card .topic-copy h3,
+.page--service .topic-card .topic-copy p { margin: 0; }
+.page--service .topic-card .topic-copy h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: clamp(20px, 1.7vw, 27px);
+  line-height: 1.55;
+  color: var(--rt-text-hi);
+  text-shadow: 0 2px 12px rgb(0 0 0 / .72);
+}
+.page--service .topic-card .topic-copy p {
+  max-width: 42em;
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.9;
+  color: var(--rt-text);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: max-height .88s cubic-bezier(.22, 1, .36, 1), margin-top .55s ease, opacity .5s ease .08s, transform .78s cubic-bezier(.22, 1, .36, 1);
+}
+/* Legacy markup fallback: keep the same title-and-copy overlay without .topic-copy. */
+.page--service .topic-card:not(:has(.topic-copy)) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  padding: clamp(24px, 3vw, 42px);
+}
+.page--service .topic-card:not(:has(.topic-copy)) > h3,
+.page--service .topic-card:not(:has(.topic-copy)) > p {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+.page--service .topic-card:not(:has(.topic-copy)) > h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: clamp(20px, 1.7vw, 27px);
+  line-height: 1.55;
+  color: var(--rt-text-hi);
+  text-shadow: 0 2px 12px rgb(0 0 0 / .72);
+}
+.page--service .topic-card:not(:has(.topic-copy)) > p {
+  max-width: 42em;
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.9;
+  color: var(--rt-text);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: max-height .88s cubic-bezier(.22, 1, .36, 1), margin-top .55s ease, opacity .5s ease .08s, transform .78s cubic-bezier(.22, 1, .36, 1);
+}
+.page--service .topic-card:hover::before,
+.page--service .topic-card:focus-visible::before { opacity: 1; }
+.page--service .topic-card:hover .topic-copy,
+.page--service .topic-card:focus-visible .topic-copy {
+  opacity: 1;
+  transform: none;
+}
+.page--service .topic-card:hover .topic-copy p,
+.page--service .topic-card:focus-visible .topic-copy p {
+  max-height: 12em;
+  margin-top: 14px;
+  opacity: 1;
+  transform: none;
+}
+.page--service .topic-card:not(:has(.topic-copy)):hover > p,
+.page--service .topic-card:not(:has(.topic-copy)):focus-visible > p {
+  max-height: 12em;
+  margin-top: 14px;
+  opacity: 1;
+  transform: none;
+}
+.page--service .topic-card:hover img,
+.page--service .topic-card:focus-visible img {
+  transform: none;
+  filter: brightness(.78) saturate(1.06) contrast(1.08);
+}
+.page--service .topic-card:focus-visible {
+  outline: 2px solid var(--rt-gold-clear);
+  outline-offset: 4px;
+}
+
+@media (min-width: 900px) {
+  .page--service .topic-grid {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(16px, 1.6vw, 24px);
+  }
+  .page--service .topic-card,
+  .page--service .topic-card:last-child:nth-child(odd) {
+    flex: 1 1 0;
+    grid-column: auto;
+    justify-self: stretch;
+    width: 0;
+    height: clamp(430px, 38vw, 590px);
+  }
+}
+
+@media (min-width: 900px) and (hover: hover) {
+  .page--service .topic-card:is(:hover, :focus-visible),
+  .page--service .topic-card:last-child:nth-child(odd):is(:hover, :focus-visible) {
+    flex-grow: 2;
+  }
+}
+
+@media (max-width: 899px), (hover: none) {
+  .page--service .topic-card { min-height: 360px; }
+  .page--service .topic-card::before { opacity: 1; }
+  .page--service .topic-copy { opacity: 1; transform: none; }
+  .page--service .topic-card .topic-copy p {
+    max-height: 12em;
+    margin-top: 14px;
+    opacity: 1;
+    transform: none;
+  }
+  .page--service .topic-card:not(:has(.topic-copy)) > p {
+    max-height: 12em;
+    margin-top: 14px;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page--service .topic-card,
+  .page--service .topic-card img,
+  .page--service .topic-card::before,
+  .page--service .topic-copy,
+  .page--service .topic-card:not(:has(.topic-copy)) > p { transition: none; }
+}
+
+.hero-title,
+.hero-intro,
+.page-hero--photo :is(.page-title, .page-lead, .label-en),
+.recruit-copy {
+  text-shadow: 0 1px 3px rgb(7 12 19 / .7);
+}
+
+@media (max-width: 899px) {
+  .service-item-photo { padding: 0; outline: 0; }
+  body { line-height: 2.05; letter-spacing: .055em; }
+  .hero-title { letter-spacing: .1em; }
+  .message-title,
+  .section-title,
+  .contact-title,
+  .page-heading { letter-spacing: .11em; }
+  .label-en,
+  .label--light .label-en,
+  .dish-chapter-en { letter-spacing: .24em; }
+  .page-hero--dark::after,
+  .page-hero--light::after {
+    background:
+      radial-gradient(ellipse 100% 125% at 20% 40%, rgb(9 15 23 / .25), transparent 80%),
+      linear-gradient(180deg, rgb(9 15 23 / .14), rgb(9 15 23 / .08) 72%, transparent);
+  }
+  .page-hero--photo .page-hero-photo {
+    filter: brightness(1.12) saturate(1.02);
+  }
+  .page-hero--photo :is(.page-title, .page-lead, .breadcrumbs, .label-en) {
+    text-shadow: 0 1px 3px #071019, 0 2px 8px rgb(7 12 19 / .95), 0 0 18px rgb(7 12 19 / .8);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .site-header::before,
+  .hero-button { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* Crisp English captions and numbered accents; keep their existing sizes and spacing. */
+.label-en,
+.label--light .label-en,
+.page-hero--photo .label-en,
+.news .label-en,
+.dish-chapter-en,
+.event-season-en,
+.event-season-num,
+.service-num,
+.offer-num,
+.reason-num,
+.topic-num,
+.facility-num,
+.step-num,
+.dish-index-num,
+.dish-index-count {
+  color: var(--rt-gold-clear);
+  font-weight: 700;
+  -webkit-font-smoothing: auto;
+}
+
+/* Company and news hero titles align with the left-hand page content. */
+@media (min-width: 900px) {
+  :is(.page--company, .page--news) .page-hero--photo .page-hero-copy {
+    grid-template-columns: auto auto auto 1fr;
+    grid-template-areas:
+      'crumbs crumbs crumbs crumbs'
+      'title label lead .';
+  }
+  :is(.page--company, .page--news) .page-hero--photo .breadcrumbs {
+    justify-self: start;
+  }
+}
+
+/* Balance the access directions with a compact, unframed map. */
+.page--company .access-map {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+@media (min-width: 900px) {
+  .page--company .access {
+    max-width: 1100px;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: clamp(32px, 4vw, 56px);
+    align-items: center;
+  }
+  .page--company .access-map {
+    width: 100%;
+    max-width: 500px;
+    height: clamp(300px, 28vw, 360px);
+    aspect-ratio: auto;
+    justify-self: start;
+  }
+}
+
+/* Contact supporting text stays readable at desktop and phone widths. */
+.page--contact :is(.direct-label, .direct-note, .note, .form-error) {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.page--contact :is(.direct-label, .direct-note, .note) { color: var(--rt-text); }
+.page--contact .required-mark { font-size: 14px; }
+
+/* Shared type sizes for equivalent headings across pages. */
+:root {
+  --type-page-title: clamp(32px, 3.4vw, 52px);
+  --type-section-title: clamp(28px, 3vw, 40px);
+  --type-subheading: clamp(20px, 1.8vw, 25px);
+  --type-body: clamp(16px, 1.2vw, 18px);
+  --type-date: 17px;
+}
+html .page .page-title { font-size: var(--type-page-title); }
+html .page :is(.page-title, .page-heading, .prose) {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+html :is(.page-heading, .section-title, .message-title, .contact-title),
+html .page--service > .split:first-of-type .page-heading {
+  font-size: var(--type-section-title);
+}
+html :is(.page-heading--small, .dish-chapter-title, .reason-copy h3,
+  .offer-card h3, .topic-card h3, .value-list h3, .policy h2,
+  .step-list h3, .form-confirm-title) { font-size: var(--type-subheading); }
+html .step-list .step-title--nowrap {
+  white-space: nowrap;
+  font-size: clamp(18px, 1.55vw, 22px);
+  letter-spacing: .04em;
+}
+html :is(.prose, .section-lead, .page-section-lead, .contact-lead),
+html .page--service > .split:first-of-type .prose {
+  font-size: var(--type-body);
+}
+html :is(.news-list time, .news-card-date, .post-date, .post-hero-date) {
+  font-size: var(--type-date);
+}
+@media (max-width: 899px) {
+  :root {
+    --type-page-title: 32px;
+    --type-section-title: 28px;
+    --type-subheading: 20px;
+    --type-body: 16px;
+  }
+}
+
+@media (max-width: 599px) {
+  .facility-list {
+    display: grid;
+    grid-auto-rows: 1fr;
+    margin-top: 32px;
+  }
+  .facility-list li {
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-content: center;
+    gap: 1px 12px;
+    padding: 10px 0;
+  }
+  .facility-num { font-size: 18px; }
+  .facility-name {
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: .05em;
+  }
+  .facility-area {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+}
+
+/* Mobile supporting copy uses a comfortable reading size. */
+@media (max-width: 899px) {
+  html .hero-intro { font-size: 14px; letter-spacing: .12em; }
+  html .service-item p,
+  html .page.page--service .topic-grid .topic-card p {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+  html :is(.meal-tag, .contact-card-label, .contact-card-note, .contact-note, .facility-area) {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  html .news-more { font-size: 15px; }
+  html .page.page--service .topic-grid .topic-card p { max-height: none; }
+}
+
+/* Keep small utility text legible on phones. */
+@media (max-width: 599px) {
+  html .menu-toggle,
+  html .nav-tel-note,
+  html .form-scale-ends,
+  html .footer-bottom { font-size: 14px; }
+  html .footer-bottom small { font-size: 1em; }
+  html .form-scale-ends { letter-spacing: .12em; }
+}
+
+/* All gallery dishes flow in one seamless row, on desktop and mobile. */
+.meals-marquee .meal-card { min-width: 0; }
+
+/* Japanese headings carry the hierarchy without repeated English captions. */
+main p.label:has(.label-en),
+.event-season-en,
+.dish-chapter-en,
+.job-type { display: none; }
+main p.label:has(.label-en) + :is(h1, h2, h3) { margin-top: 0; }
+.news #news-title .label-en {
+  font-family: var(--rt-display);
+  font-size: var(--type-section-title);
+  font-weight: 500;
+  letter-spacing: .12em;
+  color: var(--rt-text-hi);
+}
+.news #news-title .label-en::before { display: none; }
+
+/* Phone type scale: keep headings distinct while easing oversized details. */
+@media (max-width: 599px) {
+  :root {
+    --type-page-title: 28px;
+    --type-section-title: 24px;
+    --type-subheading: 19px;
+  }
+
+  html .hero-title { font-size: clamp(18px, 4.9vw, 20px); }
+  html .contact .contact-title { font-size: 20px; }
+  html .contact-tel-num,
+  html .nav-tel { font-size: 22px; }
+  html .page .job-card h3 { font-size: 19px; }
+
+  html :is(.job-pay, .event-card-title, .timeline time, .direct-value) {
+    font-size: 19px;
+  }
+  html :is(.service-num, .offer-num, .topic-num, .step-num, .dish-index-num) {
+    font-size: 18px;
+  }
+  html :is(.reason-num, .dish-chapter-num) { font-size: 22px; }
+  html .event-season-heading h3 { font-size: 26px; }
+}
+
+/* Keep the message heading on one line and the explanation a little quieter. */
+@media (max-width: 899px) {
+  html .message .message-title {
+    font-size: clamp(15px, 5.3vw, 28px);
+    line-height: 1.5;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  html .message :is(.message-lead, .message-body) {
+    font-size: clamp(16px, 4.6vw, 20px);
+    line-height: 1.9;
+    letter-spacing: .04em;
+  }
+  html .message .message-lead { margin-top: 16px; font-weight: 600; }
+  html .message .message-body { margin-top: 16px; font-size: clamp(14px, 3.8vw, 16px); }
+}
+
+/* Quiet cross-fades and short reveals, with no photo enlargement. */
+@media (prefers-reduced-motion: no-preference) {
+  html .hero-slide,
+  html .hero-slide:nth-child(even) {
+    clip-path: none;
+    transform: none;
+    visibility: visible;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0s 1.4s;
+  }
+  html .hero-slide.is-active {
+    clip-path: none;
+    transform: none;
+    opacity: 1;
+    z-index: 2;
+    transition: opacity 1.4s ease-in-out;
+  }
+  html .fx--photo,
+  html .fx--text {
+    opacity: 0;
+    filter: none;
+    transform: translateY(8px);
+    transition: opacity .9s ease, transform .9s cubic-bezier(.22, 1, .36, 1);
+    transition-delay: var(--fx-delay, 0ms);
+  }
+  html .fx.is-shown { opacity: 1; filter: none; transform: none; }
+}
+/* Desktop slides change sides. Replace the photo immediately so the outgoing image
+   never shows through beside the incoming one. */
+@media (min-width: 900px) {
+  html .hero-slide,
+  html .hero-slide:nth-child(even) {
+    visibility: hidden;
+    opacity: 0;
+    transition: none;
+  }
+  html .hero-slide.is-active {
+    visibility: visible;
+    opacity: 1;
+    transition: none;
+  }
+}
+html :is(.meal-card, .dish, .news-card, .topic-card, .offer-card) :is(a:hover, a:focus-visible) img,
+html .dish:hover .dish-photo img,
+html .page--service .topic-card:hover img { transform: none; }
+
+/* Photo page headings and leads read across the image on every screen size. */
+html .page .page-hero--photo .page-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+html .page .page-hero--photo .breadcrumbs { margin-bottom: auto; }
+html .page .page-hero--photo .page-title {
+  margin: auto 0 0;
+  max-height: none;
+  writing-mode: horizontal-tb;
+  white-space: normal;
+}
+html .page .page-hero--photo .page-lead {
+  max-width: 36em;
+  max-height: none;
+  margin: 16px 0 auto;
+  padding-top: 0;
+  writing-mode: horizontal-tb;
+  line-height: 2;
+  letter-spacing: .08em;
+}
+
+/* Use the recruit page's upper-left copy placement on every photo page. */
+@media (min-width: 900px) {
+  html .page .page-hero--photo .page-hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    transform: translateX(clamp(-48px, calc(54px - 6vw), 0px));
+  }
+  html .page .page-hero--photo .breadcrumbs {
+    align-self: flex-start;
+    margin-bottom: 0;
+  }
+  html .page .page-hero--photo .page-title {
+    position: static;
+    margin: 24px 0 0;
+    max-height: none;
+    writing-mode: horizontal-tb;
+    white-space: normal;
+  }
+  html .page .page-hero--photo .page-lead {
+    position: static;
+    max-width: 36em;
+    max-height: none;
+    margin: 16px 0 0;
+    padding: 0;
+    writing-mode: horizontal-tb;
+  }
+}
+
+@media (min-width: 900px) {
+  html .page--contact .page-hero--photo .page-hero-copy {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: none;
+  }
+  html .page--contact .page-hero--photo .breadcrumbs {
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+  }
+  html .page--contact .page-hero--photo .page-title { margin: 0; }
+  html .page--contact .page-hero--photo .page-lead { margin: 16px 0 0; }
+}
+
+/* Service and recruit open with the same type scale, spacing, and photo frame. */
+html :is(.page--service, .page--recruit) > .intro-split:first-of-type .page-heading { line-height: 1.6; }
+html :is(.page--service, .page--recruit) > .intro-split:first-of-type .prose { line-height: 1.9; }
+html :is(.page--service, .page--recruit) > .intro-split:first-of-type .prose p + p { margin-top: 12px; }
+html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-photo {
+  margin: 0;
+  aspect-ratio: 4 / 3;
+}
+html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-photo img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+}
+@media (min-width: 900px) {
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(32px, 3vw, 48px);
+  }
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-copy,
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-photo {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+  }
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .page-heading {
+    font-size: clamp(30px, 3vw, 44px);
+  }
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .prose {
+    font-size: clamp(17px, 1.4vw, 20px);
+  }
+}
+@media (min-width: 900px) and (max-width: 1099px) {
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-copy {
+    width: min(100%, 760px);
+    justify-self: center;
+  }
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-photo {
+    width: min(100%, 640px);
+    justify-self: center;
+  }
+}
+@media (max-width: 899px) {
+  html :is(.page--service, .page--recruit) > .intro-split:first-of-type .split-photo {
+    width: min(100%, 560px);
+    justify-self: center;
+  }
+}
+@media (max-width: 599px) {
+  html .page--service > .intro-split:first-of-type .page-heading {
+    font-size: clamp(16px, 5vw, 28px);
+    line-height: 1.45;
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+  html .page--service > .intro-split:first-of-type .prose { margin-top: 18px; font-size: 16px; line-height: 1.7; }
+  html .page--service > .intro-split:first-of-type .prose p { letter-spacing: 0; }
+  html .page--service > .intro-split:first-of-type .prose p + p { margin-top: 0; }
+  html .page--recruit > .intro-split:first-of-type { gap: 20px; }
+  html .page--recruit > .intro-split:first-of-type .page-heading {
+    font-size: clamp(21px, 6.7vw, 28px);
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+  html .page--recruit > .intro-split:first-of-type .page-heading br { display: none; }
+  html .page--recruit > .intro-split:first-of-type .prose { font-size: 17px; line-height: 1.85; }
+  html .page--recruit > .intro-split:first-of-type .prose p + p { margin-top: 0; }
+}
+@media (max-width: 319px) {
+  html .page--service > .intro-split:first-of-type .page-heading { white-space: normal; }
+}
+
+/* On phones, let scroll reveals carry the same photo and text motion as desktop. */
+@media (max-width: 599px) and (prefers-reduced-motion: no-preference) {
+  html .fx--photo:not(.recruit-bg):not(.is-shown) {
+    filter: blur(2px);
+    transform: translate3d(0, 22px, 0);
+  }
+  html .fx--text:not(.is-shown) {
+    filter: blur(1px);
+    transform: translate3d(0, 16px, 0);
+  }
+  html .fx--photo,
+  html .fx--text {
+    transition-duration: .8s;
+  }
+  html .fx--photo img {
+    transition: transform 1.1s cubic-bezier(.22, 1, .36, 1);
+  }
+  html .fx--photo:not(.is-shown) img { transform: scale(1.035); }
+  html .fx--photo.is-shown img { transform: none; }
+
+  html .page--service .topic-card.fx--photo :is(h3, p) {
+    transition: opacity .7s ease .15s, transform .7s cubic-bezier(.22, 1, .36, 1) .15s;
+  }
+  html .page--service .topic-card.fx--photo:not(.is-shown) :is(h3, p) {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}

@@ -1,0 +1,40 @@
+/* Hero and opening motion. Hidden states apply only when JS runs and motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  /* The hero photo opens once the opening screen has lifted. */
+  .js [data-reveal='curtain'] { clip-path: inset(0 0 100% 0); transition: clip-path 1.8s var(--ease-in-out); }
+  .js .is-ready [data-reveal='curtain'] { clip-path: inset(0); }
+
+  /* Headline characters rise one by one. */
+  .js .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(.6em);
+    filter: blur(6px);
+    transition: opacity 1s var(--ease-out), transform 1.2s var(--ease-out), filter 1s var(--ease-out);
+    transition-delay: calc(var(--i) * 55ms + .5s);
+  }
+  .js .is-ready .hero-title.is-active .char { opacity: 1; transform: none; filter: none; }
+  .js .hero-intro { opacity: 0; transition: opacity 1.4s 1.4s; }
+  .js .is-ready .hero-intro { opacity: 1; }
+
+  @media (min-width: 900px) {
+    .js .char { transform: translateX(-.4em); }
+  }
+
+  /* Opening screen: logo in, line drawn, then the screen lifts. */
+  .js .opening-logo { animation: opening-logo 1s .2s var(--ease-out) forwards; }
+  .js .opening-line { animation: opening-line 1s .5s var(--ease-in-out) forwards; }
+  .js .opening.is-done { animation: opening-lift 1s var(--ease-in-out) forwards; }
+}
+
+@keyframes opening-logo { to { opacity: 1; transform: none; } }
+@keyframes opening-line { to { transform: scaleX(1); } }
+@keyframes opening-lift { to { clip-path: inset(0 0 100% 0); } }
+
+.js .opening.is-gone { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .opening { display: none; }
+  .hero-slide { transition: opacity .6s ease; transform: none; }
+  html { scroll-behavior: auto; }
+}

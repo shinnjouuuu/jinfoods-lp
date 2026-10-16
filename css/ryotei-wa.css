@@ -1,0 +1,94 @@
+/* Japanese touches and one photo tone, on every page.
+   3. Gold hook marks (鉤) at the corners of the main photos, and a small vermilion
+      seal (落款) by the hero words.
+   4. Photos share a warmer, lamplit tone and darken softly toward their edges. */
+
+/* ---------- 4. Photo tone ---------- */
+/* Warmer and a touch deeper than the daylight originals (replaces the earlier bright filter). */
+:root { --rt-photo-filter: brightness(.97) saturate(1.08) contrast(1.07) sepia(.16); }
+
+/* A soft dark edge, like the light falls off toward the corners. */
+.split-photo,
+.reason-photo,
+.offer-card figure,
+.topic-card figure,
+.event-grid figure,
+.dish-photo { position: relative; }
+.split-photo::after,
+.reason-photo::after,
+.offer-card figure::after,
+.topic-card figure::after,
+.event-grid figure::after,
+.dish-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgb(14 17 22 / 0) 55%, rgb(14 17 22 / .42) 100%);
+}
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgb(14 17 22 / 0) 58%, rgb(14 17 22 / .38) 100%);
+}
+
+/* ---------- 3a. Corner hooks ---------- */
+/* Four short gold L-marks just inside the corners of the larger photos. */
+.message-photo,
+.split-photo:not(.split-photo--contain),
+.reason-photo,
+.oshinagaki-photo { position: relative; }
+.message-photo::before,
+.split-photo:not(.split-photo--contain)::before,
+.reason-photo::before,
+.oshinagaki-photo::before {
+  --hook: 26px;
+  --hook-line: rgb(223 192 122 / .85);
+  content: '';
+  position: absolute;
+  inset: 12px;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--hook-line), var(--hook-line)) top left / var(--hook) 1px,
+    linear-gradient(var(--hook-line), var(--hook-line)) top left / 1px var(--hook),
+    linear-gradient(var(--hook-line), var(--hook-line)) top right / var(--hook) 1px,
+    linear-gradient(var(--hook-line), var(--hook-line)) top right / 1px var(--hook),
+    linear-gradient(var(--hook-line), var(--hook-line)) bottom left / var(--hook) 1px,
+    linear-gradient(var(--hook-line), var(--hook-line)) bottom left / 1px var(--hook),
+    linear-gradient(var(--hook-line), var(--hook-line)) bottom right / var(--hook) 1px,
+    linear-gradient(var(--hook-line), var(--hook-line)) bottom right / 1px var(--hook);
+  background-repeat: no-repeat;
+}
+/* The hooks replace the full hairline frame on these photos. */
+.split-photo img,
+.reason-photo img { outline: none; }
+
+/* ---------- 3c. Vermilion seal by the hero words ---------- */
+.hero-copy::after {
+  content: '食' / '';
+  position: absolute;
+  top: calc(100% + 28px);
+  right: 2px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 3px;
+  background: #b23a2a;
+  box-shadow: inset 0 0 0 2px #b23a2a, inset 0 0 0 3px rgb(246 241 230 / .55);
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  color: #f6f1e6;
+  transform: rotate(-2deg);
+  opacity: .92;
+}
+.hero.is-text-left .hero-copy::after { right: auto; left: 2px; }
+@media (max-width: 899px) {
+  .hero-copy::after { width: 28px; height: 28px; font-size: 15px; top: calc(100% + 18px); }
+}

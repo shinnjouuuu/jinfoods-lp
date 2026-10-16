@@ -1,0 +1,92 @@
+<!--
+title: お問い合わせ
+en: Contact
+lead: 給食業務のご相談、採用についてなど、<br class="pc-only">お気軽にお問い合わせください。
+description: 株式会社JIN foodsへのお問い合わせ。給食委託・厨房業務のご相談、献立・介護食、採用について、お電話またはフォームで受け付けています。
+photo: hero-contact.webp|1792|804|窓から光が差し込む、木のテーブルと植物のある明るい食堂
+tone: light
+contact: no
+-->
+    <section class="page-section page-section--narrow" aria-labelledby="direct-title">
+      <h2 id="direct-title" class="page-heading page-heading--small">お電話・メールでのご相談</h2>
+      <div class="direct-grid">
+        <a class="direct-card" href="tel:0975749225">
+          <span class="direct-label">お電話</span>
+          <span class="direct-value">097-574-9225</span>
+          <span class="direct-note">電話受付 9:00〜17:00</span>
+        </a>
+        <a class="direct-card" href="mailto:info@jin-oita.com">
+          <span class="direct-label">メール</span>
+          <span class="direct-value">info@jin-oita.com</span>
+          <span class="direct-note">メールは24時間受付</span>
+        </a>
+      </div>
+      <p class="note">お急ぎの場合やメールを送信できない場合は、お電話ください。1週間以内に返信がない場合も、お電話でご連絡ください。</p>
+    </section>
+
+    <section class="page-section page-section--narrow page-section--tint" aria-labelledby="form-title">
+      <h2 id="form-title" class="page-heading page-heading--small">フォームでのお問い合わせ</h2>
+      <p class="page-section-lead"><span class="required-mark">必須</span>の項目をご入力ください。24時間受け付けています。</p>
+
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-honeypot" aria-hidden="true"><label for="f-website">ウェブサイト</label><input id="f-website" name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
+        <fieldset class="form-row">
+          <legend class="form-label">ご相談内容<span class="required-mark">必須</span></legend>
+          <div class="form-choices">
+            <label><input type="radio" name="topic" value="給食委託・厨房業務について" required> 給食委託・厨房業務について</label>
+            <label><input type="radio" name="topic" value="献立・介護食について"> 献立・介護食について</label>
+            <label><input type="radio" name="topic" value="採用について"> 採用について</label>
+            <label><input type="radio" name="topic" value="その他"> その他</label>
+          </div>
+          <p class="form-error" data-error-for="topic" hidden></p>
+        </fieldset>
+        <div class="form-row">
+          <label class="form-label" for="f-name">お名前<span class="required-mark">必須</span></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" maxlength="60" placeholder="山田 太郎" required>
+          <p class="form-error" data-error-for="name" hidden></p>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-org">会社名・施設名</label>
+          <input id="f-org" name="org" type="text" autocomplete="organization" maxlength="100" placeholder="株式会社〇〇・〇〇施設">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-address">住所</label>
+          <input id="f-address" name="address" type="text" autocomplete="street-address" maxlength="200" placeholder="大分県大分市〇〇町1-2-3">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-tel">電話番号<span class="required-mark">必須</span></label>
+          <input id="f-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="097-123-4567" required>
+          <p class="form-error" data-error-for="tel" hidden></p>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-email">メールアドレス<span class="required-mark">必須</span></label>
+          <input id="f-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="name@example.com" required>
+          <p class="form-error" data-error-for="email" hidden></p>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="f-message">お問い合わせ内容</label>
+          <textarea id="f-message" name="message" rows="7" maxlength="2000" placeholder="給食委託について相談したいです。"></textarea>
+        </div>
+        <div class="form-row form-row--agree">
+          <label><input type="checkbox" name="agree" required> <a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意する</label>
+          <p class="note">送信内容はお問い合わせの配信サービス FormSubmit を経由します。</p>
+          <p class="form-error" data-error-for="agree" hidden></p>
+        </div>
+        <button class="button form-submit" type="submit">入力内容を確認する</button>
+      </form>
+
+      <div class="form-confirm" id="form-confirm" hidden tabindex="-1">
+        <h3 class="form-confirm-title">入力内容のご確認</h3>
+        <dl class="data-list form-confirm-list"></dl>
+        <p class="note">内容をご確認のうえ、送信してください。</p>
+        <p class="form-status" data-form="status" role="status" tabindex="-1" hidden></p>
+        <div class="form-actions">
+          <button class="button button--ghost" type="button" data-form="back">入力画面に戻る</button>
+          <button class="button form-send" type="button" data-form="send">この内容で送信する</button>
+        </div>
+      </div>
+      <div class="form-confirm" id="form-complete" hidden tabindex="-1">
+        <h3 class="form-confirm-title">お問い合わせを受け付けました</h3>
+        <p class="note">内容を確認のうえ、ご連絡いたします。お急ぎの場合はお電話ください。</p>
+      </div>
+    </section>

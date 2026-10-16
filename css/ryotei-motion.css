@@ -1,0 +1,118 @@
+/* Top page only: motion modelled on a slow, blurred focus-pull.
+   Hidden states apply only when JS has marked the element and motion is allowed. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---------- Opening ---------- */
+  /* The logo comes into focus out of a heavy blur... */
+  .js .opening-logo {
+    opacity: 0;
+    filter: blur(40px);
+    transform: scale(1.8);
+    animation: rt-logo-in 2.2s .2s cubic-bezier(.16, 1, .3, 1) forwards;
+  }
+  .js .opening-line { animation: opening-line 1.2s 1.2s var(--ease-in-out) forwards; }
+
+  /* ...then the whole screen blurs, swells and fades away. */
+  .js .opening.is-done { animation: rt-opening-out 1.6s cubic-bezier(.37, 0, .63, 1) forwards; }
+  .js .opening.is-done > * { animation: rt-opening-zoom 1.6s cubic-bezier(.37, 0, .63, 1) forwards; }
+
+  /* ---------- Hero ---------- */
+  /* A slow cross-fade between the photos. */
+  .hero-slide { transition: opacity 3s cubic-bezier(.37, 0, .63, 1), transform 9s linear; }
+
+  /* ---------- Scroll reveal ---------- */
+  .fx { transition-delay: var(--fx-delay, 0ms); }
+  .fx--photo {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translate3d(0, 24px, 0);
+  }
+  .fx--text {
+    opacity: 0;
+    filter: blur(1px);
+    transform: translate3d(0, 18px, 0);
+  }
+  .fx.is-shown {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition:
+      opacity .75s cubic-bezier(.22, 1, .36, 1) var(--fx-delay, 0ms),
+      filter .75s cubic-bezier(.22, 1, .36, 1) var(--fx-delay, 0ms),
+      transform .85s cubic-bezier(.22, 1, .36, 1) var(--fx-delay, 0ms),
+      border-color .3s ease, background-color .3s ease, color .3s ease, box-shadow .3s ease;
+  }
+  /* The background photo is larger than its band, so it only blurs in without moving. */
+  .recruit-bg.fx--photo { transform: none; }
+}
+
+@keyframes rt-logo-in { to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes rt-opening-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes rt-opening-zoom {
+  from { opacity: 1; filter: blur(0); transform: scale(1); }
+  to { opacity: 0; filter: blur(40px); transform: scale(3); }
+}
+
+/* Phones: the next photo fades in over the current one, which stays fully shown until
+   it is covered, and neither is zoomed, so two trays never show through each other. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
+  .hero-slide,
+  .hero-slide.is-active { transform: none; }
+  .hero-slide { transition: opacity 0s .9s; }
+  .hero-slide.is-active { z-index: 1; transition: opacity .9s ease; }
+}
+
+/* Hero photos slide in from the right (or rise from below on every other photo).
+   Inactive photos are fully hidden so differently positioned slides never leave a
+   ghost image in the open side of the frame. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-slide {
+    z-index: 0;
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(0 0 0 100%);
+    transform: translateX(8%);
+    transition: none;
+  }
+  .hero-slide:nth-child(even) { clip-path: inset(100% 0 0 0); transform: translateY(8%); }
+  .hero-slide.is-active {
+    z-index: 2;
+    opacity: 1;
+    visibility: visible;
+    clip-path: inset(0);
+    transform: none;
+    transition:
+      clip-path 1.5s cubic-bezier(.77, 0, .175, 1),
+      transform 1.8s cubic-bezier(.19, 1, .22, 1);
+  }
+}
+/* Small interaction feedback throughout the site, without changing frame dimensions. */
+@media (prefers-reduced-motion: no-preference) {
+  :is(.button, .nav-contact, .contact-card, .text-link) {
+    transition: translate .3s ease, background-color .3s ease, color .3s ease,
+      border-color .3s ease, box-shadow .3s ease;
+  }
+  :is(.button, .nav-contact, .contact-card, .text-link):active { translate: 0 1px; }
+  .timeline li::before { transition: scale .3s ease, box-shadow .3s ease; }
+  .data-list > div, .facility-list > li { transition: background-color .3s ease; }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :is(.button, .contact-card):hover { translate: 0 -3px; }
+  .text-link:hover { translate: 3px 0; }
+  .timeline li:hover::before { scale: 1.25; box-shadow: 0 0 0 5px rgb(215 180 107 / .12); }
+  .data-list > div:hover, .facility-list > li:hover { background-color: rgb(215 180 107 / .04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx, .fx.is-shown { opacity: 1; filter: none; transform: none; transition: none; }
+}
+
+/* Footer information stays still and readable at all times. */
+.site-footer, .site-footer * {
+  animation: none !important;
+  transition: none !important;
+}

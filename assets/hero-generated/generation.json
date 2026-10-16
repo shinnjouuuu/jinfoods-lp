@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "references": {
+    "meal": "IMG_4037.JPG",
+    "kitchen": "IMG_4035.JPG",
+    "style": "User-provided current hero screenshots"
+  },
+  "assets": {
+    "meal": "meal-v1.png",
+    "kitchen": "kitchen-v1.png"
+  },
+  "prompts": {
+    "meal": "Faithfully rephotograph the supplied institutional meal in a wide 16:9 frame. Preserve all actual dishes, portions, ceramics, black/red tray, chirashi rice, fried fish, smiling potato, soup, three side bowls, chopsticks and spoon. Warm natural editorial light, realistic textures and horizontal wooden-table extension; no invented dishes, text or UI.",
+    "kitchen": "Create a wide photorealistic editorial hero from the supplied work photo. Preserve the worker, brown cap, mask, white clothing, black apron, blue gloves and task of arranging flour-dusted fish fillets on stainless catering trays. Match the existing hero’s warm restrained mood, natural light and quiet kitchen background; no text or UI."
+  }
+}

@@ -1,0 +1,122 @@
+/* ---------- Top page "Daily Meals": お品書き ----------
+   One large photo, and the dish names standing in vertical columns read from the
+   right, like a ryotei's written menu. Pointing at a name brings its photo forward
+   (js/modules/oshinagaki.js). */
+.oshinagaki {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  margin-top: clamp(40px, 5vw, 72px);
+}
+
+/* The photos are stacked in one cell and cross-fade. */
+.oshinagaki-photo { display: grid; }
+.oshinagaki-figure {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  transition: opacity .9s var(--ease-out);
+}
+.oshinagaki-figure.is-active { z-index: 1; opacity: 1; }
+.oshinagaki-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.oshinagaki-figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 18px;
+  margin-top: 18px;
+}
+.oshinagaki-tag { font-size: 12px; letter-spacing: .24em; color: var(--rt-gold); }
+.oshinagaki-figure figcaption a {
+  font-family: var(--serif);
+  font-size: 17px;
+  letter-spacing: .14em;
+  color: var(--rt-text-hi);
+  transition: color .3s;
+}
+.oshinagaki-figure figcaption a:hover { color: var(--rt-gold); }
+
+/* The menu: the whole block is written vertically, so the title and then each dish
+   stack as columns from the right, with hairlines between them. Physical sides are
+   used on purpose: logical ones would turn sideways here. */
+.oshinagaki-menu {
+  justify-self: end;
+  writing-mode: vertical-rl;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-top: 1px solid var(--rt-gold-line);
+  border-bottom: 1px solid var(--rt-gold-line);
+}
+.oshinagaki-title {
+  margin: 0;
+  padding: 4px 8px 0 12px;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: .5em;
+  color: var(--rt-gold);
+}
+.oshinagaki-list li { border-left: 1px solid var(--rt-gold-line); }
+.oshinagaki-list li:first-child { border-right: 1px solid var(--rt-gold-line); }
+.oshinagaki-item {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  min-block-size: 0;
+  padding: 26px 11px 4px;
+  border: 0;
+  background: none;
+  text-align: start;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: .26em;
+  color: rgb(236 230 216 / .6);
+  cursor: pointer;
+  transition: color .4s;
+}
+/* A small gold dot marks the dish on show. */
+.oshinagaki-item::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rt-gold);
+  opacity: 0;
+  transform: translateX(-50%) scale(.4);
+  transition: opacity .4s, transform .4s var(--ease-out);
+}
+.oshinagaki-item:hover { color: var(--rt-text-hi); }
+.oshinagaki-item[aria-pressed='true'] { color: var(--rt-gold); }
+.oshinagaki-item[aria-pressed='true']::before { opacity: 1; transform: translateX(-50%) scale(1); }
+.oshinagaki-item:focus-visible { outline: 1px solid var(--rt-gold); outline-offset: -4px; }
+
+@media (min-width: 900px) {
+  .oshinagaki {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(40px, 5vw, 80px);
+    align-items: stretch;
+  }
+  .oshinagaki-menu { align-self: start; padding-top: 32px; padding-bottom: 32px; }
+  .oshinagaki-title { padding: 4px 10px 0 clamp(16px, 1.6vw, 24px); font-size: clamp(22px, 1.8vw, 28px); }
+  .oshinagaki-item {
+    padding: 30px clamp(12px, 1.1vw, 16px) 4px;
+    font-size: clamp(16px, 1.3vw, 19px);
+    letter-spacing: .32em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oshinagaki-figure,
+  .oshinagaki-item,
+  .oshinagaki-item::before { transition: none; }
+}
